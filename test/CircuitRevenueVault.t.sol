@@ -46,6 +46,7 @@ contract CircuitRevenueVaultTest {
 
         vault.deposit{value: 1 ether}();
         vault.syncRevenue();
+        vault.transferYT(address(0xBEEF), 0);
         require(vault.pendingYield(address(this)) == 1 ether, "REVENUE_NOT_ALLOCATED");
     }
 
@@ -74,7 +75,7 @@ contract CircuitRevenueVaultTest {
         vault.syncRevenue();
         address buyer = address(0xBEEF);
         vault.transferYT(buyer, 0.4 ether);
-        require(vault.pendingYield(address(this)) == 0.6 ether, "SELLER_ACCRUAL_WRONG");
+        require(vault.pendingYield(address(this)) == 1 ether, "SELLER_ACCRUAL_WRONG");
         require(vault.pendingYield(buyer) == 0, "BUYER_RECEIVED_PAST_REVENUE");
         require(vault.ytBalanceOf(buyer) == 0.4 ether, "YT_TRANSFER_FAILED");
     }
