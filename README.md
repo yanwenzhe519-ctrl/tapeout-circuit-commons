@@ -49,7 +49,7 @@ npm run verify:deployment
 
 The verifier checks the RPC chain ID, bytecode at Registry/Router/Processor/ownership adapter addresses, and the configured Circuit manifest. It exits non-zero if a required address is missing, malformed, points to an EOA, or the manifest is incomplete. A Vault address is optional until the DeFi pool is created. Keep `VITE_ENABLE_LIVE_CALLS=false` until the actual TapeOut Processor ABI and byte encoding have been manually exercised on X Layer; then set it to `true`, rebuild, and run the verifier again.
 
-For a public web deployment, import the repository into Vercel. The included `vercel.json` builds `dist/`. Set the same `VITE_*` variables in the hosting provider's production environment; never commit `.env.local` or a private deployment key.
+For a public web deployment, the repository includes a GitHub Pages workflow and a Vercel configuration. GitHub Pages builds `dist/` from `master`; Vercel can be used as an alternative. Set the same `VITE_*` variables in the hosting provider's production environment; never commit `.env.local` or a private deployment key. Before the real addresses are configured, the public demo intentionally remains in non-callable preview mode.
 
 The public launch checklist is: deploy and verify Processor through TapeOut factory; record the deployment wallet and Processor transaction; deploy the current Registry/Router versions; publish a real Manifest URI; deploy and configure the Vault; run one paid Circuit call; verify the UsageReceipt and creator withdrawal; then publish the product URL and GitHub URL in the hackathon form.
 
