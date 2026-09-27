@@ -27,7 +27,32 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Require production contract configuration
+        env:
+          VITE_REGISTRY_ADDRESS: ${{ secrets.VITE_REGISTRY_ADDRESS }}
+          VITE_ROUTER_ADDRESS: ${{ secrets.VITE_ROUTER_ADDRESS }}
+          VITE_FACTORY_ADDRESS: ${{ secrets.VITE_FACTORY_ADDRESS }}
+          VITE_PROCESSOR_RECIPIENT_ADDRESS: ${{ secrets.VITE_PROCESSOR_RECIPIENT_ADDRESS }}
+        run: |
+          test -n "$VITE_REGISTRY_ADDRESS"
+          test -n "$VITE_ROUTER_ADDRESS"
+          test -n "$VITE_FACTORY_ADDRESS"
+          test -n "$VITE_PROCESSOR_RECIPIENT_ADDRESS"
+      - name: Build with production configuration
+        env:
+          VITE_XLAYER_RPC_URL: ${{ secrets.VITE_XLAYER_RPC_URL }}
+          VITE_REGISTRY_ADDRESS: ${{ secrets.VITE_REGISTRY_ADDRESS }}
+          VITE_ROUTER_ADDRESS: ${{ secrets.VITE_ROUTER_ADDRESS }}
+          VITE_FACTORY_ADDRESS: ${{ secrets.VITE_FACTORY_ADDRESS }}
+          VITE_PROCESSOR_RECIPIENT_ADDRESS: ${{ secrets.VITE_PROCESSOR_RECIPIENT_ADDRESS }}
+          VITE_POD_ACCOUNT_ADDRESS: ${{ secrets.VITE_POD_ACCOUNT_ADDRESS }}
+          VITE_TAPEOUT_PROCESSOR_ADDRESS: ${{ secrets.VITE_TAPEOUT_PROCESSOR_ADDRESS }}
+          VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS: ${{ secrets.VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS }}
+          VITE_TAPEOUT_CONTAINER_ADAPTER_ADDRESS: ${{ secrets.VITE_TAPEOUT_CONTAINER_ADAPTER_ADDRESS }}
+          VITE_TAPEOUT_CONTAINER_ADDRESS: ${{ secrets.VITE_TAPEOUT_CONTAINER_ADDRESS }}
+          VITE_CIRCUIT_ID: ${{ secrets.VITE_CIRCUIT_ID }}
+          VITE_ENABLE_LIVE_CALLS: ${{ secrets.VITE_ENABLE_LIVE_CALLS }}
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
