@@ -333,9 +333,10 @@ function App() {
   async function refreshData() {
     setDataState("loading");
     try {
-      const response = await fetch(
-        "/api/tapeout-processors?page=1&page_size=8&sort=circuits",
-      );
+      const processorDataUrl = import.meta.env.PROD
+        ? import.meta.env.BASE_URL + "data/tapeout-processors.json"
+        : "/api/tapeout-processors?page=1&page_size=8&sort=circuits";
+      const response = await fetch(processorDataUrl);
       if (!response.ok) throw new Error();
       const payload = (await response.json()) as {
         total?: number;
