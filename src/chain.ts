@@ -160,7 +160,12 @@ export async function readPublishedCircuits() {
   const latest = await publicClient.getBlockNumber()
   const fromBlock = latest - registryDeploymentBlock > 10000n ? latest - 10000n : registryDeploymentBlock
   if (fromBlock > latest) return []
-  const logs = await publicClient.getLogs({ address: registryAddress as `0x${string}`, event: manifestPublishedEvent, fromBlock, toBlock: latest })
+  const logs = []
+  for (let start = fromBlock; start <= latest; start += 100n) {
+    const end = start + 99n < latest ? start + 99n : latest
+    const chunk = await publicClient.getLogs({ address: registryAddress as `0x${string}`, event: manifestPublishedEvent, fromBlock: start, toBlock: end })
+    logs.push(...chunk)
+  }
   const latestByCircuit = new Map<string, (typeof logs)[number]>()
   for (const log of logs) latestByCircuit.set(log.args.circuitId!.toString(), log)
   const items = await Promise.all([...latestByCircuit.values()].reverse().map(async (log) => {
@@ -187,7 +192,12 @@ export async function readUsageReceipts() {
   const latest = await publicClient.getBlockNumber()
   const fromBlock = latest - routerDeploymentBlock > 10000n ? latest - 10000n : routerDeploymentBlock
   if (fromBlock > latest) return []
-  const logs = await publicClient.getLogs({ address: routerAddress as `0x${string}`, event: usageReceiptEvent, fromBlock, toBlock: latest })
+  const logs = []
+  for (let start = fromBlock; start <= latest; start += 100n) {
+    const end = start + 99n < latest ? start + 99n : latest
+    const chunk = await publicClient.getLogs({ address: routerAddress as `0x${string}`, event: usageReceiptEvent, fromBlock: start, toBlock: end })
+    logs.push(...chunk)
+  }
   return Promise.all(logs.slice(-100).reverse().map(async (log) => {
     const block = await publicClient.getBlock({ blockNumber: log.blockNumber! })
     const circuitId = log.args.circuitId!
