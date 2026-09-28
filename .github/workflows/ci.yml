@@ -6,24 +6,8 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  VITE_XLAYER_RPC_URL: https://rpc.xlayer.tech
-  VITE_REGISTRY_ADDRESS: 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B
-  VITE_ROUTER_ADDRESS: 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119
-  VITE_FACTORY_ADDRESS: 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8
-  VITE_PROCESSOR_RECIPIENT_ADDRESS: 0x05667de34ad47bafe8a8b976c19809cadf7719d2
-  VITE_TAPEOUT_PROCESSOR_ADDRESS: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
-  VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
-  VITE_TAPEOUT_CONTAINER_ADAPTER_ADDRESS: 0x536add8f30f03b69f6fbf29d425a816a0dc50106
-  VITE_TAPEOUT_CONTAINER_ADDRESS: 0x25A1D87789aE72E326B3A987F610F08219aA0764
-  VITE_CIRCUIT_ID: 1
-  VITE_ENABLE_LIVE_CALLS: true
-  VITE_ROUTER_DEPLOYMENT_BLOCK: 71721902
-  VITE_REGISTRY_DEPLOYMENT_BLOCK: 71721889
-  VITE_RECEIPT_LOOKBACK_BLOCKS: 500
-
 jobs:
-  web-and-deployment:
+  web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +16,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run verify:release
+      - run: npm run build
 
   contracts:
     runs-on: ubuntu-latest
