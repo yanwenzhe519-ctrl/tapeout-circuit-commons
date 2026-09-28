@@ -404,8 +404,16 @@ function Publisher() {
           setProgress({ done: sent, total: plan.chunks })
           log(`${index === 0 ? '+' : '…'} ${file.path} ${part.length} B · gas ${receipt.gasUsed}`)
         }
-        const info = await publicClient.readContract({ address: SITE_REGISTRY, abi: siteRegistryAbi, functionName: 'fileInfo', args: [CONTAINER, file.path] })
-        if (Number(info[0]) !== file.bytes.length || Number(info[4]) !== file.chunks) throw new Error(`${file.path} 链上校验不一致`)
+        await retry(async () => {
+          const info = await publicClient.readContract({ address: SITE_REGISTRY, abi: siteRegistryAbi, functionName: 'fileInfo', args: [CONTAINER, file.path] })
+          const sizeMatches = Number(info[0]) === file.bytes.length
+          const hashMatches = info[2].toLowerCase() === file.sha.toLowerCase()
+          const chunksMatch = Number(info[4]) === file.chunks
+          if (!sizeMatches || !hashMatches || !chunksMatch) {
+            throw new Error(`${file.path} 链上校验不一致（size ${info[0]}/${file.bytes.length}，chunks ${info[4]}/${file.chunks}）`)
+          }
+          return info
+        }, 6)
       }
       const fallback = await publicClient.readContract({ address: SITE_REGISTRY, abi: siteRegistryAbi, functionName: 'fallbackPath', args: [CONTAINER] })
       if (fallback !== 'index.html') {
@@ -421,6 +429,9 @@ function Publisher() {
     } catch (error) {
       log(`失败：${errorMessage(error)}`)
       setPhase(`部署暂停：${errorMessage(error)}`)
+      // Force a fresh chain comparison before retrying so a partial upload
+      // can never reuse the stale full-bundle plan.
+      setPlan(null)
       if (operator) {
         try {
           log('正在退回临时操作员余额并清理权限…')
