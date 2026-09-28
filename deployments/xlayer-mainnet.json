@@ -1,0 +1,36 @@
+{
+  "network": "X Layer",
+  "chainId": 196,
+  "verifiedAt": "2026-09-28",
+  "circuitId": "1",
+  "processorIndex": 177,
+  "contracts": {
+    "registry": "0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B",
+    "router": "0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119",
+    "factory": "0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8",
+    "processor": "0x44bf1283199f080fd3cfaeaa01b8650859fe63b5",
+    "ownershipAdapter": "0x44bf1283199f080fd3cfaeaa01b8650859fe63b5",
+    "containerAdapter": "0x536add8f30f03b69f6fbf29d425a816a0dc50106",
+    "container": "0x25A1D87789aE72E326B3A987F610F08219aA0764",
+    "podAccount": "0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6"
+  },
+  "deploymentBlocks": {
+    "registry": 71721889,
+    "router": 71721902
+  },
+  "manifest": {
+    "version": "1.0.1",
+    "hash": "0xa77618e0a5ee29e8b56ab09df0e2422abd3d228712b0ad008aa853d09a23290f",
+    "uri": "https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/manifests/circuit-1-v1.0.1.json",
+    "priceOkb": "0.0000001",
+    "creatorBps": 8000,
+    "processorBps": 1500,
+    "podBps": 500
+  },
+  "deweb": {
+    "name": "1.2.177.tape",
+    "uri": "tape://1.2.177.tape/",
+    "gateway": "https://1-2-177.tapekit.org/",
+    "activation": "pending"
+  }
+}

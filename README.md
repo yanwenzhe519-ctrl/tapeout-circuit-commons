@@ -1,87 +1,121 @@
-# TapeOut Circuit Commons
+# Circuit Commons
 
-Circuit Commons is an X Layer-first application layer for TapeOut circuits. Circuit creators publish a versioned license manifest; applications pay in OKB to run an authorized circuit; the router emits a usage receipt and distributes the call fee according to the manifest split. The DeFi layer adds fixed-term Revenue Vaults that issue principal (PT) and variable usage-yield (YT) claims backed only by creator revenue credited by the Router.
+[![CI](https://github.com/yanwenzhe519-ctrl/tapeout-circuit-commons/actions/workflows/ci.yml/badge.svg)](https://github.com/yanwenzhe519-ctrl/tapeout-circuit-commons/actions/workflows/ci.yml)
+[![X Layer](https://img.shields.io/badge/X%20Layer-chain%20196-111827)](https://www.okx.com/web3/explorer/xlayer)
+[![TapeOut](https://img.shields.io/badge/TapeOut-Circuit%20%231-14b8a6)](https://tapeout.net/)
+[![Status](https://img.shields.io/badge/status-mainnet%20prototype-f45f4b)](#production-state)
 
-## What is real in this repository
+**The operating and handoff layer for TapeOut applications on X Layer.**
 
-- A Vite + React + TypeScript application with real EIP-1193 wallet connection.
-- X Layer chain switching (chain ID `196`) and OKLink links.
-- `viem` ABI encoding for the Router call.
-- A Registry-event Circuit catalog with content hash verification, plus creator publish and on-chain receipt views.
-- Yield Vault and My Positions views with explicit PT/YT risk language and fail-closed transaction states.
-- Solidity Registry, Router, and Revenue Vault contracts with manifest validation, price checks, owner binding, pull-payment splits, receipt events, fixed-term principal redemption, and usage-yield accounting.
+Circuit Commons packages a real TapeOut Circuit, its official Container, a stable Pod Account, service configuration, assets, revenue rights and operating history into one transferable on-chain application unit.
 
-## Configuration
+[Open the live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) · [Read the judge guide](docs/JUDGE_GUIDE.md) · [Inspect the deployment](deployments/xlayer-mainnet.json) · [View the Manifest](public/manifests/circuit-1-v1.0.1.json)
 
-Copy `.env.example` to `.env.local` and provide deployed X Layer addresses:
+![Circuit Commons overview](docs/assets/overview.png)
 
-```text
-VITE_XLAYER_RPC_URL=https://rpc.xlayer.tech
-VITE_REGISTRY_ADDRESS=0x...
-VITE_ROUTER_ADDRESS=0x...
-VITE_TAPEOUT_PROCESSOR_ADDRESS=0x...
-VITE_REVENUE_VAULT_ADDRESS=0x...
-VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS=0x...
-VITE_ROUTER_DEPLOYMENT_BLOCK=0
-VITE_REGISTRY_DEPLOYMENT_BLOCK=0
-VITE_IPFS_GATEWAY_URL=https://ipfs.io/ipfs/
-VITE_ENABLE_LIVE_CALLS=false
-```
+## The problem
 
-Until those addresses are set, the site deliberately keeps execution disabled and labels the deployment as pending. Live circuit calls also require `VITE_ENABLE_LIVE_CALLS=true`, and must remain false until the TapeOut adapter ABI and input encoding have been manually verified. The ownership adapter must expose TapeOut's canonical `ownerOf(uint256)`. Set separate Registry and Router deployment blocks; event readers scan no more than the latest 10,000 blocks.
+A TapeOut Circuit can be permanent and transferable, but the application around it is normally fragmented across unrelated addresses and systems. The Circuit identifies the compute, the Container hosts the DeWeb surface, a treasury holds assets and revenue, configuration lives in off-chain files, and the current operator holds deployment permissions. Transferring only the Circuit can therefore break the application or strand its assets.
+
+## The product
+
+Circuit Commons creates a Circuit Pod with a stable X Layer address. Its controller is resolved from TapeOut's canonical Circuit ownership, so ownership can change while the Pod address, assets and history stay in place. This is not a file-notarization service and not another domain marketplace. It is an executable lifecycle protocol:
+
+1. Verify the real Circuit owner and official Container.
+2. Create one stable Pod Account for the Circuit.
+3. Publish a content-addressed Manifest with pricing and revenue policy.
+4. Route paid Circuit execution through X Layer and emit auditable receipts.
+5. Credit creator, Processor and Pod revenue using pull payments.
+6. Transfer the Circuit and verify that the same Pod, Container, Manifest and revenue account are controlled by the new owner.
+
+## Architecture
+
+~~~mermaid
+flowchart LR
+    C[TapeOut Circuit] --> O[Canonical ownerOf]
+    C --> T[Official Container]
+    O --> P[Stable Pod Account]
+    T --> P
+    M[Versioned Manifest] --> R[Commons Registry]
+    P --> R
+    U[User pays OKB] --> X[Commons Router]
+    X --> E[TapeOut Processor eval]
+    X --> Q[UsageReceipt]
+    X --> S[Creator / Processor / Pod splits]
+    O -. ownership changes .-> N[New operator]
+    N --> P
+~~~
+
+## What judges can verify in three minutes
+
+Open the [live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) without a wallet, inspect Circuit registry and Circuit Pods, then run the release verifier:
+
+~~~bash
+npm install
+cp .env.example .env.local
+npm run verify:release
+~~~
+
+This validates the production build, X Layer chain ID 196, deployed bytecode, official Container state, Pod binding and the public Manifest hash. The full narrative and competition evidence are in [SUBMISSION.md](SUBMISSION.md) and [docs/JUDGE_GUIDE.md](docs/JUDGE_GUIDE.md).
+
+![Verified Circuit registry](docs/assets/registry.png)
+
+## Production state
+
+Verified on September 28, 2026. The X Layer Registry, Router, Factory, official Container, stable Pod Account and active Manifest are deployed and verified. The public GitHub Pages app is available for read-only inspection. The TapeKit identity is reserved but its activation payment is still pending. The first user-signed paid receipt and real Circuit handoff are final demo evidence still to be recorded; the repository does not present a simulation as a completed transaction.
+
+## X Layer addresses
+
+| Component | Address |
+| --- | --- |
+| Registry | 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B |
+| Router | 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119 |
+| Pod Factory | 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8 |
+| TapeOut Processor / ownership adapter | 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5 |
+| Container adapter | 0x536add8f30f03b69f6fbf29d425a816a0dc50106 |
+| Circuit #1 Container | 0x25A1D87789aE72E326B3A987F610F08219aA0764 |
+| Circuit #1 Pod Account | 0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6 |
+
+## Why it fits the competition
+
+Circuit Commons combines a clear application scenario with deep TapeOut integration and a real X Layer settlement layer. The Circuit and its official Container are verified on-chain; the Pod preserves the operating boundary across ownership transfer; the Router turns usage into receipts and explicit creator, Processor and Pod revenue; and the UI guides a creator through setup while keeping ordinary inspection wallet-free. The economic design uses a Circuit Pod account rather than a speculative token, and the contracts enforce owner checks, exact prices, bounded splits, pull withdrawals and reentrancy protection.
+
+## Repository map
+
+| Path | Purpose |
+| --- | --- |
+| contracts/ | Registry, Router, Factory, Pod Account and optional Revenue Vault |
+| src/ | Product UI and X Layer integration |
+| script/ | Foundry deployment and configuration scripts |
+| scripts/ | Build, Manifest, deployment and verification tooling |
+| test/ | Solidity regression tests |
+| public/manifests/ | Public Circuit Manifest |
+| deployments/ | Auditable mainnet deployment metadata |
+| publisher.html | Wallet-connected TapeKit DeWeb publisher |
 
 ## Local development
 
-```bash
+~~~bash
 npm install
+cp .env.example .env.local
 npm run dev
-```
+~~~
 
-Open the printed local URL, connect an EVM wallet, and switch to X Layer. Before deployment the catalog shows non-callable preview rows; the receipt view shows no fabricated transactions.
+The application fails closed when required addresses are absent. Private keys are never accepted by the frontend. With Foundry installed, run:
 
-## Production verification
+~~~bash
+forge test -vvv
+~~~
 
-After creating `.env.local` from `.env.example`, run:
+## Security scope
 
-```bash
-npm run verify:deployment
-```
+This is a mainnet prototype, not an independently audited custody product. The contracts use immutable trust anchors, canonical Circuit-owner checks, exact-price execution, bounded basis-point splits, pull-payment withdrawals and a reentrancy lock. See [SECURITY.md](SECURITY.md).
 
-The verifier checks the RPC chain ID, bytecode at Registry/Router/Processor/ownership adapter addresses, and the configured Circuit manifest. It exits non-zero if a required address is missing, malformed, points to an EOA, or the manifest is incomplete. A Vault address is optional until the DeFi pool is created. Keep `VITE_ENABLE_LIVE_CALLS=false` until the actual TapeOut Processor ABI and byte encoding have been manually exercised on X Layer; then set it to `true`, rebuild, and run the verifier again.
+## Further reading
 
-For a public web deployment, the repository includes a GitHub Pages workflow and a Vercel configuration. GitHub Pages builds `dist/` from `master`; Vercel can be used as an alternative. Set the same `VITE_*` variables in the hosting provider's production environment; never commit `.env.local` or a private deployment key. Before the real addresses are configured, the public demo intentionally remains in non-callable preview mode.
+- [Hackathon submission](SUBMISSION.md)
+- [Judge verification guide](docs/JUDGE_GUIDE.md)
+- [Deployment guide](DEPLOYMENT.md)
+- [Product design](DESIGN.md)
+- [Demo video script](VIDEO_SCRIPT.md)
 
-The public launch checklist is: deploy and verify Processor through TapeOut factory; record the deployment wallet and Processor transaction; deploy the current Registry/Router versions; publish a real Manifest URI; deploy and configure the Vault; run one paid Circuit call; verify the UsageReceipt and creator withdrawal; then publish the product URL and GitHub URL in the hackathon form.
-
-## Contract deployment order
-
-The Registry and Router ABI in this working tree changed during development to include manifest URIs. Any earlier deployment of these contracts is incompatible; deploy the current versions as a fresh set before configuring the app.
-
-1. Deploy the verified TapeOut Processor or a small adapter that exposes the exact `eval(uint256,bytes)` ABI used by the Router.
-2. Deploy a TapeOut ownership adapter exposing `ownerOf(uint256)` for the target Circuit NFT.
-3. Deploy `CircuitCommonsRegistry(ownershipAdapter)` on X Layer.
-4. Deploy `CircuitCommonsRouter(registry, processor, commonsRecipient)`.
-5. Complete the Publish form, export the canonical JSON, upload that unchanged file to IPFS (or immutable HTTPS storage), paste its URI, then publish from the Circuit owner account. The page verifies ownership through the adapter and writes the JSON keccak256, URI, price and split to the Registry. Catalog readers fetch the URI and reject any content whose hash no longer matches.
-6. Deploy `CircuitRevenueVault(router, circuitId, manifestHash, maturity, cap)` using that hash.
-7. Call `setRevenueRecipient(circuitId, vault)` from the Circuit owner account. To republish a Circuit manifest, first set the existing revenue recipient to the zero address; this prevents old Vaults from silently receiving revenue for a new version.
-8. Put the resulting addresses and Router deployment block in `.env.local`, then rebuild and verify on X Layer.
-
-## DeFi accounting model
-
-The Vault is not a fixed-rate product. It mints internal PT and YT balances 1:1 against deposited OKB, but YT only accrues when the Router credits the Vault as the manifest's `revenueRecipient`. The Vault pulls its creator share through `Router.withdraw()`, indexes it across YT balances, and lets users claim realized revenue. If there are no YT holders, the withdrawal reverts and Router funds remain pending rather than being stranded in the Vault. PT is redeemable after maturity if liquidity is available. PT/YT are not ERC-20 tokens in this version and are not composable with external DeFi protocols. Until a deployment is configured, catalog and vault examples remain clearly labeled fixtures and receipt history is empty rather than fabricated.
-
-## Contract tests
-
-With Foundry installed, run:
-
-```bash
-forge test
-```
-
-The tests cover owner-only publishing, exact-price execution, inactive Circuit rejection, payout conservation, recipient/version changes, Router withdrawal preservation before the first deposit, cap enforcement, maturity, PT redemption, and YT transfer accrual. They are regression tests, not an audit.
-
-The TapeOut Processor ABI must be checked against the target deployment before production deployment. The Router intentionally fails closed when a circuit is inactive or the call price is wrong.
-
-## Security notes
-
-The contracts use immutable registry/router references, exact-price checks, bounded payout shares, pull-payment escrow, reentrancy locks, circuit-owner verification through an explicit adapter, and no protocol token. This repository is not ready to custody public funds until the TapeOut Processor ABI and ownership adapter are verified, all contracts are tested against those deployments on X Layer, PT/YT composability is decided, and an independent security review is complete. Do not market PT/YT as guaranteed yield.

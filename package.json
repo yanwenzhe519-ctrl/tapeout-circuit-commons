@@ -1,13 +1,23 @@
 {
   "name": "tapeout-circuit-commons",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "deweb:publisher": "vite --host 127.0.0.1 --open /publisher.html",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify:deployment": "node scripts/verify-deployment.mjs"
+    "contracts:build": "node scripts/build-contracts.mjs",
+    "contracts:test": "node scripts/run-foundry.mjs test",
+    "contracts:deploy": "node scripts/deploy-foundry.mjs deploy",
+    "contracts:configure": "node scripts/deploy-foundry.mjs configure",
+    "manifest:generate": "node scripts/generate-manifest.mjs",
+    "deployment:params": "node scripts/generate-deployment-params.mjs",
+    "deployment:env": "node scripts/write-production-env.mjs",
+    "verify:deployment": "node scripts/verify-deployment.mjs",
+    "verify:xlayer": "node scripts/verify-deployment.mjs",
+    "verify:release": "npm run build && npm run manifest:generate && npm run verify:deployment"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

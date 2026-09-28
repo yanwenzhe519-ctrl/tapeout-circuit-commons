@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 interface ICircuitCommonsRegistry {
     function manifests(uint256 circuitId) external view returns (address publisher, bytes32 hash, uint256 price, uint16 creatorBps, uint16 processorBps, address revenueRecipient, string memory manifestURI, bool active);
+    function podMetadata(uint256 circuitId) external view returns (address podAccount, address containerAdapter, address container, bytes32 serviceHash, string memory serviceURI, uint64 version);
 }
 
 /// @notice Payment and receipt boundary. A production deployment should point
@@ -14,6 +15,7 @@ interface ITapeOutProcessor {
 contract CircuitCommonsRouter {
     ICircuitCommonsRegistry public immutable registry;
     ITapeOutProcessor public immutable processor;
+    address public immutable processorRecipient;
     address public immutable commons;
     uint256 public nextReceiptId = 1;
     uint256 private locked = 1;
@@ -24,18 +26,19 @@ contract CircuitCommonsRouter {
     event WithdrawalCredited(address indexed account, uint256 amount);
     event Withdrawal(address indexed account, uint256 amount);
 
-    constructor(address registry_, address processor_, address commons_) {
-        require(registry_ != address(0) && processor_ != address(0) && commons_ != address(0), "ZERO_ADDRESS");
+    constructor(address registry_, address processor_, address processorRecipient_, address commons_) {
+        require(registry_ != address(0) && processor_ != address(0) && processorRecipient_ != address(0) && commons_ != address(0), "ZERO_ADDRESS");
         registry = ICircuitCommonsRegistry(registry_);
         processor = ITapeOutProcessor(processor_);
+        processorRecipient = processorRecipient_;
         commons = commons_;
     }
 
     function runEval(uint256 circuitId, bytes calldata inputs) external payable returns (uint256 receiptId) {
         require(locked == 1, "REENTRANT");
         locked = 2;
-        (address creator, , uint256 price, uint16 creatorBps, uint16 processorBps, address revenueRecipient, , bool active) = registry.manifests(circuitId);
-        require(active && creator != address(0), "INACTIVE_CIRCUIT");
+        (address creator, uint256 price, uint16 creatorBps, uint16 processorBps, address revenueRecipient) = _manifestTerms(circuitId);
+        require(creator != address(0), "INACTIVE_CIRCUIT");
         require(msg.value == price, "WRONG_PRICE");
         require(uint256(creatorBps) + uint256(processorBps) <= 10000, "BAD_SPLIT");
         bytes memory output = processor.eval(circuitId, inputs);
@@ -44,10 +47,22 @@ contract CircuitCommonsRouter {
         uint256 processorAmount = (msg.value * processorBps) / 10000;
         address creatorRecipient = revenueRecipient == address(0) ? creator : revenueRecipient;
         _credit(creatorRecipient, creatorAmount);
-        _credit(address(processor), processorAmount);
-        _credit(commons, msg.value - creatorAmount - processorAmount);
-        _emitUsageReceipt(receiptId, circuitId, inputs, output, creatorRecipient);
+        _credit(processorRecipient, processorAmount);
+        address commonsRecipient = _commonsRecipient(circuitId);
+        _credit(commonsRecipient, msg.value - creatorAmount - processorAmount);
+        _emitUsageReceipt(receiptId, circuitId, inputs, output, creatorRecipient, commonsRecipient);
         locked = 1;
+    }
+
+    function _manifestTerms(uint256 circuitId) private view returns (address creator, uint256 price, uint16 creatorBps, uint16 processorBps, address revenueRecipient) {
+        bool active;
+        (creator, , price, creatorBps, processorBps, revenueRecipient, , active) = registry.manifests(circuitId);
+        if (!active) return (address(0), price, creatorBps, processorBps, revenueRecipient);
+    }
+
+    function _commonsRecipient(uint256 circuitId) private view returns (address recipient) {
+        (recipient, , , , , ) = registry.podMetadata(circuitId);
+        if (recipient == address(0)) recipient = commons;
     }
 
     function withdraw() external {
@@ -65,7 +80,7 @@ contract CircuitCommonsRouter {
         emit WithdrawalCredited(recipient, amount);
     }
 
-    function _emitUsageReceipt(uint256 receiptId, uint256 circuitId, bytes calldata inputs, bytes memory output, address creatorRecipient) private {
-        emit UsageReceipt(receiptId, circuitId, msg.sender, keccak256(inputs), keccak256(output), msg.value, creatorRecipient, address(processor), commons);
+    function _emitUsageReceipt(uint256 receiptId, uint256 circuitId, bytes calldata inputs, bytes memory output, address creatorRecipient, address commonsRecipient) private {
+        emit UsageReceipt(receiptId, circuitId, msg.sender, keccak256(inputs), keccak256(output), msg.value, creatorRecipient, processorRecipient, commonsRecipient);
     }
 }

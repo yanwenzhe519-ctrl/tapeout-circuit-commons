@@ -1,6 +1,9 @@
 node_modules/
 dist/
 .env.local
+.env.deploy
+.env.production
+.env.*.local
 .playwright-cli/
 *.bin
 *.abi
@@ -8,3 +11,6 @@ dist/
 *.tsbuildinfo
 out/
 cache/
+output/
+outputs/playwright/
+outputs/*.png

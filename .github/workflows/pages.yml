@@ -14,11 +14,31 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  VITE_XLAYER_RPC_URL: https://rpc.xlayer.tech
+  VITE_REGISTRY_ADDRESS: 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B
+  VITE_ROUTER_ADDRESS: 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119
+  VITE_FACTORY_ADDRESS: 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8
+  VITE_PROCESSOR_RECIPIENT_ADDRESS: 0x05667de34ad47bafe8a8b976c19809cadf7719d2
+  VITE_TAPEOUT_PROCESSOR_ADDRESS: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
+  VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
+  VITE_TAPEOUT_CONTAINER_ADAPTER_ADDRESS: 0x536add8f30f03b69f6fbf29d425a816a0dc50106
+  VITE_TAPEOUT_CONTAINER_ADDRESS: 0x25A1D87789aE72E326B3A987F610F08219aA0764
+  VITE_CIRCUIT_ID: 1
+  VITE_ENABLE_LIVE_CALLS: true
+  VITE_ENABLE_BROWSER_DEPLOY: true
+  VITE_ROUTER_DEPLOYMENT_BLOCK: 71721902
+  VITE_REGISTRY_DEPLOYMENT_BLOCK: 71721889
+  VITE_RECEIPT_LOOKBACK_BLOCKS: 500
+  VITE_TAPEKIT_SITE_REGISTRY_ADDRESS: 0xd6efb7adcc9c83dc4924ad56f6a8e4e969b9adb6
+  VITE_TAPEKIT_DOMAIN_BINDING_ADDRESS: 0x68809fd2fb343aa57d0aeb7f33defe477c9666f9
+  VITE_TAPEOUT_PROCESSOR_INDEX: 177
+  VITE_TAPEKIT_GATEWAY: tapekit.org
+
 jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,9 +47,17 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Snapshot TapeOut public processors
+        run: |
+          mkdir -p public/data
+          curl --fail --retry 3 --silent --show-error \
+            "https://tapeout.work/api/v1/processors?page=1&page_size=8&sort=circuits" \
+            --output public/data/tapeout-processors.json
+      - name: Build production application
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
       - id: deployment
         uses: actions/deploy-pages@v4
+

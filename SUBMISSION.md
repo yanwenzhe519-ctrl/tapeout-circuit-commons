@@ -1,42 +1,51 @@
-# Hackathon Submission Draft
+# Ignix Genesis Transistor Hackathon Submission
 
-Use this draft for the TapeOut Genesis Transistor Hackathon form after the real Processor deployment and first Circuit tapeout are complete.
+## TapeOut Circuit Commons
 
-## Project Name
+### One-line story
 
-TapeOut Circuit Commons
+Circuit Commons turns a TapeOut Circuit into a transferable on-chain application: the compute, official Container, stable operating account, assets, service configuration, revenue policy and operating history stay together when control moves to a new operator on X Layer.
 
-## Project Description
+### Project description
 
-TapeOut Circuit Commons is an X Layer application layer for turning TapeOut circuits into licensed, metered services. Circuit owners publish a versioned Manifest with an immutable content hash, public URI, OKB price, and payout split. X Layer applications call a verified Processor through our Router, and every paid execution emits a UsageReceipt containing the Circuit ID, caller, input commitment, output commitment, amount, and payout recipients.
+TapeOut makes computation permanent, but a useful application needs more than a Circuit. A frontend may live in one place, contracts in another, revenue in a third wallet, and operational permissions in an off-chain document. Selling or handing over only the Circuit can therefore break the application or strand its assets.
 
-The DeFi layer addresses a missing primitive in the TapeOut ecosystem: predictable rights around circuit usage revenue. A creator can route its share into a fixed-term Revenue Vault. Depositors receive principal claims (PT) and variable usage-revenue claims (YT). YT can only claim realized creator revenue from verified Router withdrawals; there is no fixed APY and no protocol token. PT redemption is time-locked, payout accounting is pull-based, and the Vault is bound to the exact Manifest hash.
+Circuit Commons introduces the Circuit Pod as the missing lifecycle primitive. The Pod is a stable X Layer account controlled by the current owner of a real TapeOut Circuit. It binds the official Circuit Container, a content-addressed service Manifest, an application treasury, paid execution receipts and a revenue policy. When the Circuit changes hands, the Pod address, Container, assets and operating history remain in place while the new Circuit owner becomes the controller.
 
-The product includes a public circuit catalog, owner-verified publishing flow, hash-checked Manifest discovery, wallet connection, X Layer network switching, signed OKB calls, on-chain receipt history, Revenue Vault deposits, and PT/YT positions. The UI stays fail-closed until the deployed TapeOut Processor ABI, ownership adapter, and real X Layer addresses are configured.
+The result is not a file notarization service and not another name marketplace. It is an executable operating and handoff layer for TapeOut applications: verify the identity, package the application, settle usage in OKB, inspect the evidence, and transfer the whole operating unit without migrating state.
 
-## Public Links
+### Application scenario
+
+The first live application is Circuit Commons Pod Controller, a policy circuit for checking whether a TapeOut project is ready to run, settle or hand off. Its Manifest describes the input checks and output decisions, while the X Layer Pod keeps the frontend, service configuration, receipts and revenue surface attached to Circuit #1. The same model can be reused by AI services, games, autonomous agents, data products and any other application built around a TapeOut Circuit.
+
+### Competition fit
+
+The innovation is the combination of identity, operation and transfer. Existing Circuit or Container marketplaces can move a name or a single asset; Circuit Commons moves the running application unit. A buyer can inspect the verified Circuit owner, official Container relationship, Manifest hash, service URI, Pod address, revenue policy and receipts before taking control. After the transfer, the same Pod remains the asset and revenue boundary, so the handoff does not require migrating funds, permissions, frontend state or historical evidence.
+
+That product is deeply integrated with TapeOut rather than merely mentioning it: the application reads the canonical ownership relationship, verifies the official Container adapter, binds the Container account to the Circuit, stores the Processor and Circuit identifiers in the Manifest, and routes execution through the configured Processor ABI. The Pod controller is derived from ownerOf(Circuit ID), so the control plane follows TapeOut ownership rather than a private platform database. This creates a practical use case for any AI service, game, autonomous agent or data product built around a Circuit.
+
+X Layer is the settlement and ownership rail. Registry, Router, Factory and Pod Account are deployed on X Layer mainnet. A creator gets a guided wallet flow for owner verification, Container state, Pod creation, Manifest publication, revenue inspection and handoff verification; an end user can inspect the application without a wallet, then sign one exact-price OKB call and receive an auditable UsageReceipt. The primary asset is the stable Pod operating account, not a speculative token. The live policy allocates 80% to the creator, 15% to the Processor and 5% to Pod commons at 0.0000001 OKB per call, with pull-payment balances rather than hidden custody.
+
+The implementation is designed to be reviewable and safe for a mainnet prototype: owner-gated publishing, exact-price checks, bounded basis-point splits, a reentrancy lock, one Factory-created Pod per Circuit, and Pod calls restricted to the current canonical Circuit owner. Foundry regression tests and a release verifier check chain ID, bytecode, Container state, Pod binding and Manifest hash. The UI fails closed when a required address or adapter is missing, and never requests a private key. The repository is explicit that the code is not independently audited and that final paid-call and handoff transactions must be recorded as real evidence before submission.
+
+### Public evidence
 
 - GitHub: https://github.com/yanwenzhe519-ctrl/tapeout-circuit-commons
 - Demo: https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/
-- Processor contract: `[PROCESSOR_ADDRESS]`
-- Deployment wallet: `[DEPLOYMENT_WALLET]`
-- First Circuit tapeout transaction: `[TAPEOUT_TRANSACTION]`
-- Product demo transaction / UsageReceipt: `[USAGE_RECEIPT_TRANSACTION]`
+- X Layer chain ID: 196
+- Processor / ownership adapter: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
+- Registry: 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B
+- Router: 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119
+- Factory: 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8
+- Container adapter: 0x536add8f30f03b69f6fbf29d425a816a0dc50106
+- Circuit #1 Container: 0x25A1D87789aE72E326B3A987F610F08219aA0764
+- Circuit #1 Pod Account: 0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6
+- Manifest: public/manifests/circuit-1-v1.0.1.json
 
-## Contact
+### Proof boundary
 
-- X: `[X_ACCOUNT]`
-- Telegram: `[TELEGRAM_USERNAME]`
-- Contact email: `[CONTACT_EMAIL]`
+The shared X Layer contracts, official Container, Pod Account and active Manifest are deployed and verified. The production build and read-only execution simulation pass. The final user-signed evidence still to be recorded before submission is one paid call producing a UsageReceipt and one real Circuit ownership transfer followed by the handoff verifier. These are clearly marked as pending rather than claimed as completed.
 
-## Eligibility Evidence Checklist
+### Competition requirements
 
-- [ ] Processor deployed on X Layer through TapeOut factory
-- [ ] Transistor supply, unit price, and cap publicly disclosed at deployment
-- [ ] At least one Circuit taped out on the Processor before the deadline
-- [ ] Processor address and deployment wallet added above
-- [ ] Public Demo URL loads without wallet configuration and shows the fail-closed state
-- [ ] Real X Layer addresses added to the hosting provider environment
-- [ ] `npm run verify:deployment` passes
-- [ ] `VITE_ENABLE_LIVE_CALLS=true` enabled only after Processor ABI verification
-- [ ] At least one real paid call produces a UsageReceipt
+The processor and Circuit evidence are linked above, the application scenario is demonstrated by the live Pod Controller, and the repository contains the contract addresses, deployment configuration, product demo, Manifest, tests and verification commands. The remaining deployment metadata that must be copied from the wallet or explorer before submitting is the original Processor deployment wallet and transaction hash, plus the final paid-call and handoff transaction hashes. No value, volume or self-trade claim is used as a substitute for product evidence.

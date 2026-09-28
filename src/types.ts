@@ -23,6 +23,9 @@ export interface CircuitManifest {
 export interface UsageReceipt {
   id: string
   circuit: string
+  caller: string
+  inputHash: string
+  outputHash: string
   amount: string
   timestamp: string
   txHash: string
