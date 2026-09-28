@@ -75,6 +75,7 @@ const domainBindingAbi = [
   { type: 'function', name: 'bind', stateMutability: 'payable', inputs: [{ name: 'domain', type: 'string' }, { name: 'container', type: 'address' }, { name: 'months', type: 'uint256' }], outputs: [] },
   { type: 'function', name: 'isLive', stateMutability: 'view', inputs: [{ name: 'domain', type: 'string' }, { name: 'container', type: 'address' }], outputs: [{ name: '', type: 'bool' }] },
   { type: 'function', name: 'paidUntil', stateMutability: 'view', inputs: [{ name: 'domainHash', type: 'bytes32' }, { name: 'container', type: 'address' }], outputs: [{ name: '', type: 'uint40' }] },
+  { type: 'function', name: 'monthlyFee', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'uint256' }] },
 ] as const
 
 const circuitCommonsRegistryAbi = [
@@ -320,19 +321,15 @@ function Publisher() {
       log(`${DEWEB_NAME} 已激活`)
       return
     }
-    const hash = keccak256(stringToHex(DEWEB_NAME))
-    const [paidUntil, block] = await Promise.all([
-      publicClient.readContract({ address: DOMAIN_BINDING, abi: domainBindingAbi, functionName: 'paidUntil', args: [hash, CONTAINER] }),
-      publicClient.getBlock(),
-    ])
-    const monthSeconds = 30 * 86_400
-    const base = Math.max(Number(paidUntil), Number(block.timestamp))
-    const months = Math.max(0, Math.min(120, Math.floor((Number(block.timestamp) + 120 * monthSeconds - base) / monthSeconds)))
-    if (months < 1) throw new Error(`${DEWEB_NAME} 已达到最长免费绑定期限，暂时不能继续延长。`)
-    setPhase('请在钱包中确认免费 DeWeb 名称激活')
-    const data = encodeFunctionData({ abi: domainBindingAbi, functionName: 'bind', args: [DEWEB_NAME, CONTAINER, BigInt(months)] })
-    await sendFromBrowser(owner, DOMAIN_BINDING, data)
-    log(`${DEWEB_NAME} 已激活 ${months} 个月；服务费为 0，仅支付 X Layer Gas`)
+    // The binding contract charges monthlyFee per month. One month is enough
+    // for a demo and avoids silently committing a long prepaid term.
+    const months = 1n
+    const monthlyFee = await publicClient.readContract({ address: DOMAIN_BINDING, abi: domainBindingAbi, functionName: 'monthlyFee' })
+    const totalFee = monthlyFee * months
+    setPhase(`请在钱包中确认 DeWeb 名称激活（${formatEther(totalFee)} OKB / ${months} 个月）`)
+    const data = encodeFunctionData({ abi: domainBindingAbi, functionName: 'bind', args: [DEWEB_NAME, CONTAINER, months] })
+    await sendFromBrowser(owner, DOMAIN_BINDING, data, totalFee)
+    log(`${DEWEB_NAME} 已激活 ${months} 个月；激活费用 ${formatEther(totalFee)} OKB`)
   }
 
   async function syncProjectManifest(owner: Hex, uploadedFiles: LocalFile[]) {
