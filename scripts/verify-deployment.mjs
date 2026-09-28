@@ -4,6 +4,7 @@ import { createPublicClient, getAddress, http, keccak256, parseAbi, stringToHex 
 
 const env = { ...loadEnv('.env.local'), ...process.env }
 const rpcUrl = env.VITE_XLAYER_RPC_URL || 'https://rpc.xlayer.tech'
+const manifestFallbackUri = env.VITE_MANIFEST_FALLBACK_URI || ''
 const expectedChainId = 196
 const addresses = {
   registry: env.VITE_REGISTRY_ADDRESS,
@@ -139,9 +140,17 @@ async function main() {
       if (!manifest[0] || manifest[1] === '0x' + '00'.repeat(32) || !manifest[6]) errors.push(`Circuit ${circuitId}: incomplete manifest`)
       if (!manifest[7]) errors.push(`Circuit ${circuitId}: manifest is inactive`)
       if (manifest[6]) {
-        const response = await fetch(manifest[6], { signal: AbortSignal.timeout(10000) })
-        if (!response.ok) throw new Error(`Manifest fetch returned HTTP ${response.status}`)
-        const document = JSON.parse(await response.text())
+        const manifestUrls = [manifest[6], manifestFallbackUri].filter((value, index, all) => value && all.indexOf(value) === index)
+        let document
+        let lastManifestError = 'Manifest URI did not return JSON'
+        for (const manifestUrl of manifestUrls) {
+          const response = await fetch(manifestUrl, { signal: AbortSignal.timeout(10000) })
+          if (!response.ok) { lastManifestError = `Manifest fetch returned HTTP ${response.status}`; continue }
+          const raw = await response.text()
+          if (/text\/html/i.test(response.headers.get('content-type') || '') || /^\s*</.test(raw)) { lastManifestError = 'Manifest gateway returned HTML'; continue }
+          try { document = JSON.parse(raw); break } catch { lastManifestError = 'Manifest response was not valid JSON' }
+        }
+        if (!document) throw new Error(lastManifestError)
         const canonicalHash = keccak256(stringToHex(JSON.stringify(document, null, 2)))
         if (canonicalHash !== manifest[1]) errors.push(`Circuit ${circuitId}: public Manifest hash does not match Registry`)
         if (String(document.circuitId) !== String(circuitId)) errors.push(`Circuit ${circuitId}: public Manifest has the wrong Circuit ID`)

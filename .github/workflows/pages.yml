@@ -58,6 +58,7 @@ jobs:
           VITE_TAPEOUT_CONTAINER_ADDRESS: ${{ secrets.VITE_TAPEOUT_CONTAINER_ADDRESS }}
           VITE_CIRCUIT_ID: ${{ secrets.VITE_CIRCUIT_ID }}
           VITE_ENABLE_LIVE_CALLS: ${{ secrets.VITE_ENABLE_LIVE_CALLS }}
+          VITE_MANIFEST_FALLBACK_URI: ${{ secrets.VITE_MANIFEST_FALLBACK_URI || 'https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/manifests/circuit-1-v1.0.1.json' }}
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

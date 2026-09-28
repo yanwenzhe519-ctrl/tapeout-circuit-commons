@@ -27,6 +27,7 @@ export const routerDeploymentBlock = BigInt(import.meta.env.VITE_ROUTER_DEPLOYME
 export const registryDeploymentBlock = BigInt(import.meta.env.VITE_REGISTRY_DEPLOYMENT_BLOCK || '0')
 export const receiptLookbackBlocks = BigInt(import.meta.env.VITE_RECEIPT_LOOKBACK_BLOCKS || '500')
 export const ipfsGateway = import.meta.env.VITE_IPFS_GATEWAY_URL || 'https://ipfs.io/ipfs/'
+export const manifestFallbackUri = import.meta.env.VITE_MANIFEST_FALLBACK_URI || ''
 export const liveCallsEnabled = import.meta.env.VITE_ENABLE_LIVE_CALLS === 'true'
 export const adminWalletAddress = import.meta.env.VITE_ADMIN_WALLET_ADDRESS || ''
 export const browserDeploymentEnabled = import.meta.env.VITE_ENABLE_BROWSER_DEPLOY === 'true'
@@ -456,6 +457,44 @@ export function buildManifestJson(input: CircuitLicenseInput) {
   return JSON.stringify({ chainId: XLAYER_CHAIN_ID, circuitId: input.circuitId, name: input.name.trim(), version: input.version.trim(), processor: tapeoutProcessorAddress, inputSchema: input.inputSchema.trim(), outputSchema: input.outputSchema.trim(), price: input.price, creatorBps: input.creatorBps, processorBps: input.processorBps, commonsBps: 10000 - input.creatorBps - input.processorBps }, null, 2)
 }
 
+type ManifestDocument = {
+  circuitId: string
+  name: string
+  description?: string
+  version: string
+  processor: string
+  inputSchema: string
+  outputSchema: string
+  price: string
+}
+
+async function fetchManifestDocument(uri: string, circuitId: bigint): Promise<{ manifest: ManifestDocument; canonical: string; source: string }> {
+  const configuredFallback = manifestFallbackUri.trim()
+  const localFallback = `${import.meta.env.BASE_URL}manifests/circuit-${circuitId.toString()}.json`
+  const urls = [uri, configuredFallback || localFallback].filter((value, index, all) => value && all.indexOf(value) === index)
+  let lastError = 'Manifest URI did not return JSON.'
+  for (const url of urls) {
+    const resolved = url.startsWith('ipfs://') ? ipfsGateway.replace(/\/$/, '') + '/' + url.slice(7) : url
+    try {
+      const response = await fetch(resolved, { cache: 'no-store' })
+      if (!response.ok) {
+        lastError = `Manifest fetch failed (${response.status})`
+        continue
+      }
+      const raw = await response.text()
+      if (/text\/html/i.test(response.headers.get('content-type') || '') || /^\s*</.test(raw)) {
+        lastError = 'Manifest gateway returned an HTML bootstrap page.'
+        continue
+      }
+      const manifest = JSON.parse(raw) as ManifestDocument
+      return { manifest, canonical: JSON.stringify(manifest, null, 2), source: resolved }
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+  }
+  throw new Error(lastError)
+}
+
 async function verifyManifestDocument(input: CircuitLicenseInput, expectedJson: string, expectedHash: string) {
   const uri = input.manifestURI.trim()
   const url = uri.startsWith('ipfs://') ? ipfsGateway.replace(/\/$/, '') + '/' + uri.slice(7) : uri
@@ -509,13 +548,8 @@ export async function readPublishedCircuits() {
     const circuitId = BigInt(configuredCircuitId)
     const current = await publicClient.readContract({ address: registryAddress as `0x${string}`, abi: manifestViewAbi, functionName: 'manifests', args: [circuitId] })
     if (!current[7] || current[1] === '0x' + '00'.repeat(32) || !current[6]) return []
-    const uri = current[6]
-    const url = uri.startsWith('ipfs://') ? ipfsGateway.replace(/\/$/, '') + '/' + uri.slice(7) : uri
-    const response = await fetch(url, { cache: 'no-store' })
-    if (!response.ok) throw new Error('Manifest fetch failed (' + response.status + ')')
-    const raw = await response.text()
-    const manifest = JSON.parse(raw) as { circuitId: string; name: string; description?: string; version: string; processor: string; inputSchema: string; outputSchema: string; price: string }
-    if (keccak256(stringToHex(JSON.stringify(manifest, null, 2))) !== current[1]) throw new Error('Manifest hash mismatch for Circuit #' + configuredCircuitId)
+    const { manifest, canonical } = await fetchManifestDocument(current[6], circuitId)
+    if (keccak256(stringToHex(canonical)) !== current[1]) throw new Error('Manifest hash mismatch for Circuit #' + configuredCircuitId)
     if (BigInt(manifest.circuitId) !== circuitId) throw new Error('Manifest Circuit ID does not match Registry state.')
     const creatorShare = Number(current[3]) / 100
     const processorShare = Number(current[4]) / 100
@@ -536,12 +570,8 @@ export async function readPublishedCircuits() {
     const current = await publicClient.readContract({ address: registryAddress as `0x${string}`, abi: manifestViewAbi, functionName: 'manifests', args: [log.args.circuitId!] })
     if (!current[7] || current[1] !== log.args.hash || current[6] !== log.args.manifestURI) return null
     const uri = log.args.manifestURI!
-    const url = uri.startsWith('ipfs://') ? `${ipfsGateway.replace(/\/$/, '')}/${uri.slice(7)}` : uri
-    const response = await fetch(url)
-    if (!response.ok) throw new Error(`Manifest fetch failed (${response.status})`)
-    const raw = await response.text()
-    if (keccak256(stringToHex(raw)) !== log.args.hash) throw new Error(`Manifest hash mismatch for Circuit #${log.args.circuitId}`)
-    const manifest = JSON.parse(raw) as { circuitId: string; name: string; description?: string; version: string; processor: string; inputSchema: string; outputSchema: string; price: string }
+    const { manifest, canonical } = await fetchManifestDocument(uri, log.args.circuitId!)
+    if (keccak256(stringToHex(canonical)) !== log.args.hash) throw new Error(`Manifest hash mismatch for Circuit #${log.args.circuitId}`)
     if (BigInt(manifest.circuitId) !== log.args.circuitId) throw new Error('Manifest Circuit ID does not match its Registry event.')
     const circuitId = log.args.circuitId!
     const creatorShare = Number(log.args.creatorBps) / 100
