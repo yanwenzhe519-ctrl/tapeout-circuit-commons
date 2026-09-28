@@ -62,7 +62,7 @@ This validates the production build, X Layer chain ID 196, deployed bytecode, of
 
 ## Production state
 
-Verified on September 28, 2026. The X Layer Registry, Router, Factory, official Container, stable Pod Account and active Manifest are deployed and verified. The public GitHub Pages app is available for read-only inspection. The TapeKit identity is reserved but its activation payment is still pending. The first user-signed paid receipt and real Circuit handoff are final demo evidence still to be recorded; the repository does not present a simulation as a completed transaction.
+Verified on September 29, 2026. The X Layer Registry, Router, Factory, official Container, stable Pod Account, active Manifest and live TapeKit identity are deployed and verified. The public GitHub Pages app and DeWeb gateway are available for inspection. The first user-signed paid receipt and real Circuit handoff are final demo evidence still to be recorded; the repository does not present a simulation as a completed transaction.
 
 ## X Layer addresses
 

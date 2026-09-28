@@ -31,6 +31,7 @@
     "name": "1.2.177.tape",
     "uri": "tape://1.2.177.tape/",
     "gateway": "https://1-2-177.tapekit.org/",
-    "activation": "pending"
+    "activation": "live",
+    "gatewayVerifiedAt": "2026-09-29"
   }
 }

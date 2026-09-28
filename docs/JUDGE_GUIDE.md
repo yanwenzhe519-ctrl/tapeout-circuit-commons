@@ -55,5 +55,5 @@ forge test -vvv
 
 As of September 28, 2026, infrastructure is deployed and a read-only mainnet simulation of runEval succeeds. The Router has not yet emitted its first paid UsageReceipt, and the real ownership-handoff transaction remains final demo evidence. The UI and verification logic for both flows are implemented; the repository does not label simulated evidence as a completed transaction.
 
-The TapeKit identity tape://1.2.177.tape/ is reserved, but the gateway activation payment is still pending.
+The TapeKit identity `tape://1.2.177.tape/` is live and resolves through the TapeKit gateway. The first paid `UsageReceipt` and a real Circuit ownership handoff remain intentionally unclaimed final evidence until they are recorded on X Layer.
 
