@@ -62,7 +62,7 @@ This validates the production build, X Layer chain ID 196, deployed bytecode, of
 
 ## Production state
 
-The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Registry, Router, Factory and stable Pod Account are live on X Layer. Manifest publication, paid-call evidence and the final handoff transaction remain the submission smoke tests.
+The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Registry, Router, Factory and stable Pod Account are live on X Layer. The formal Manifest is published, the Registry points to the live DeWeb release, and a real paid call has produced `UsageReceipt #1`. Creator/Processor and Pod withdrawals are also recorded in [the deployment evidence](deployments/xlayer-mainnet.json). Circuit ownership handoff is an optional follow-up demonstration and is intentionally not represented as completed evidence.
 
 ## X Layer addresses
 
@@ -80,6 +80,22 @@ The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Re
 ## Why it fits the competition
 
 Circuit Commons combines a clear application scenario with deep TapeOut integration and a real X Layer settlement layer. The Circuit and its official Container are verified on-chain; the Pod preserves the operating boundary across ownership transfer; the Router turns usage into receipts and explicit creator, Processor and Pod revenue; and the UI guides a creator through setup while keeping ordinary inspection wallet-free. The economic design uses a Circuit Pod account rather than a speculative token, and the contracts enforce owner checks, exact prices, bounded splits, pull withdrawals and reentrancy protection.
+
+## Competition evidence at a glance
+
+| Requirement / judging dimension | Evidence in this repository |
+| --- | --- |
+| Processor deployed through TapeOut factory on X Layer | Formal Processor `0xC658...9189F`, factory `0x1f09...0761`, creation transaction in [`deployments/xlayer-mainnet.json`](deployments/xlayer-mainnet.json) |
+| Supply, unit price and cap disclosed | `1,000,000,000` cap, `50` minted, `0.000066 OKB` unit price, formal transistor contract recorded in deployment metadata |
+| At least one completed tapeout | Circuit #1 `TapedOut` transaction and `47` gates recorded in deployment metadata |
+| Clear application and usable demo | Live Pod Controller: [GitHub Pages app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) and [DeWeb](https://1-2-248.tapekit.org/) |
+| TapeOut integration depth | Canonical `ownerOf`, official Container adapter, Circuit ID and Container binding are verified by `npm run verify:deployment` |
+| X Layer integration quality | Registry, Router, Factory and Pod Account are deployed on chain 196; exact-price OKB execution emits `UsageReceipt` |
+| Asset / revenue design | Stable Pod Account binds service, Container, treasury boundary and revenue policy; pull withdrawals are evidenced in the deployment record |
+| Security and economic model | Owner-gated publishing, exact-price checks, bounded BPS splits, immutable trust anchors, reentrancy lock and pull payments; scope is documented in [`SECURITY.md`](SECURITY.md) |
+| User growth potential | Wallet-free inspection, one exact-price call for end users, and a reusable Pod model for AI services, games, agents and data products |
+
+See [`SUBMISSION.md`](SUBMISSION.md) and [`docs/SUBMISSION_CHECKLIST.md`](docs/SUBMISSION_CHECKLIST.md) for transaction-level hashes and the full narrative.
 
 ## Repository map
 

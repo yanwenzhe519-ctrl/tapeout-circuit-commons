@@ -49,13 +49,18 @@ The implementation is designed to be reviewable and safe for a mainnet prototype
 - Formal Circuit #1 Container: 0xb67E375c873E1F278A52E215300B42831eDDC641
 - Formal Circuit #1 Pod Account: 0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0
 - Manifest: public/manifests/circuit-1-v1.0.1.json
+- Manifest publication tx: `0x3a24f133e3d82d61f641b5664cfde95ef886561066d4931b1d4d8e6b5042e618`
+- DeWeb Manifest switch tx: `0x811875275a3b4aed72753547047c0f36af900959e4c2b70ca5bd1e01ea3a69e7`
+- Real paid `UsageReceipt #1` tx: `0xec0ea8d18b23af9cb50d04c2b8263b11605262333c805d6e0b9e828f9ffbbbed`
+- Pod withdrawal tx: `0x7b1ef24128c6e52dd67bc9c8a8dc32cddbe05a4c38b01b6facd8b555d6ff3d46`
+- Processor withdrawal tx: `0x024bd01ae22d998a57e4876b3ed35fedaf641a0ad6886dadd434a2d4fbd70688`
 
 For the field-by-field submission sheet, including the Processor creation transaction, factory target, transistor economics and the remaining evidence boundary, see [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
 
 ### Proof boundary
 
-The discarded `1111 / 2222` deployment remains documented only as test history. The formal deployment now includes Registry, Router, Factory, the official Container and Pod Account. Manifest publication, a paid `UsageReceipt` and the final ownership-handoff evidence remain to be recorded.
+The discarded `1111 / 2222` deployment remains documented only as test history. The formal deployment includes Registry, Router, Factory, the official Container and Pod Account. A formal Manifest, DeWeb release, paid `UsageReceipt` and real withdrawals are recorded above. Ownership handoff remains an optional post-submission lifecycle demonstration and is not claimed as completed evidence.
 
 ### Competition requirements
 
-The processor and Circuit evidence are linked above, the application scenario is demonstrated by the live Pod Controller, and the repository contains the contract addresses, deployment configuration, product demo, Manifest, tests and verification commands. The remaining deployment metadata that must be copied from the wallet or explorer before submitting is the original Processor deployment wallet and transaction hash, plus the final paid-call and handoff transaction hashes. No value, volume or self-trade claim is used as a substitute for product evidence.
+The processor and Circuit evidence are linked above, the application scenario is demonstrated by the live Pod Controller, and the repository contains the contract addresses, deployment configuration, product demo, Manifest, tests and verification commands. The live paid-call and withdrawal evidence is recorded above. No value, volume or self-trade claim is used as a substitute for product evidence.

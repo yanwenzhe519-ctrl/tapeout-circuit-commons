@@ -82,11 +82,20 @@
   "manifest": {
     "version": "1.0.1",
     "hash": "0xf62ca2048dc1b4bd1a5e1e808396139d590155febd3dbb29e3da11fb86177f07",
-    "uri": "https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/manifests/circuit-1-v1.0.1.json",
+    "uri": "https://1-2-248.tapekit.org/manifests/circuit-1-v1.0.1.json",
+    "publicationTransaction": "0x3a24f133e3d82d61f641b5664cfde95ef886561066d4931b1d4d8e6b5042e618",
+    "dewebSwitchTransaction": "0x811875275a3b4aed72753547047c0f36af900959e4c2b70ca5bd1e01ea3a69e7",
+    "publicationBlock": 71889964,
+    "dewebSwitchBlock": 71891542,
     "priceOkb": "0.0000001",
     "creatorBps": 8000,
     "processorBps": 1500,
-    "podBps": 500
+    "podBps": 500,
+    "usageReceiptTransaction": "0xec0ea8d18b23af9cb50d04c2b8263b11605262333c805d6e0b9e828f9ffbbbed",
+    "usageReceiptBlock": 71889984,
+    "podWithdrawalTransaction": "0x7b1ef24128c6e52dd67bc9c8a8dc32cddbe05a4c38b01b6facd8b555d6ff3d46",
+    "processorWithdrawalTransaction": "0x024bd01ae22d998a57e4876b3ed35fedaf641a0ad6886dadd434a2d4fbd70688",
+    "withdrawalBlocks": [71890912, 71890943]
   },
   "testDeweb": {
     "name": "1.2.177.tape",
@@ -99,6 +108,9 @@
     "name": "1.2.248.tape",
     "uri": "tape://1.2.248.tape/",
     "gateway": "https://1-2-248.tapekit.org/",
-    "activation": "pending formal release"
+    "activation": "live",
+    "verifiedAt": "2026-09-29",
+    "pathCount": 11,
+    "fallback": "index.html"
   }
 }

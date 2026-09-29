@@ -48,15 +48,20 @@ This sheet uses the formal `Circuit Commons / CCOM` Processor and its verified X
 ## 5. Product links
 
 - Product demo: https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/
-- Formal DeWeb target: `tape://1.2.248.tape/` (activation pending)
+- Formal DeWeb target: `tape://1.2.248.tape/` (live; 11 paths, `index.html` fallback)
 - Formal DeWeb gateway: https://1-2-248.tapekit.org/
 - GitHub: https://github.com/yanwenzhe519-ctrl/tapeout-circuit-commons
 - Manifest: https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/manifests/circuit-1-v1.0.1.json
 
-## 6. Work required before claiming full completion
+## 6. End-to-end evidence
 
-1. Publish the formal Manifest through the Registry and record its transaction hash.
-2. Record one real paid Router call and its `UsageReceipt` transaction hash.
-3. Record one real revenue withdrawal from the Pod flow.
-4. Record one real Circuit ownership transfer and post-transfer handoff verification.
-5. Activate the formal `1.2.248.tape` DeWeb release.
+| Proof | Transaction / status |
+| --- | --- |
+| Formal Manifest publication | `0x3a24f133e3d82d61f641b5664cfde95ef886561066d4931b1d4d8e6b5042e618` |
+| Registry switched to formal DeWeb Manifest | `0x811875275a3b4aed72753547047c0f36af900959e4c2b70ca5bd1e01ea3a69e7` |
+| Real paid Router call / `UsageReceipt #1` | `0xec0ea8d18b23af9cb50d04c2b8263b11605262333c805d6e0b9e828f9ffbbbed` |
+| Pod revenue withdrawal | `0x7b1ef24128c6e52dd67bc9c8a8dc32cddbe05a4c38b01b6facd8b555d6ff3d46` |
+| Processor revenue withdrawal | `0x024bd01ae22d998a57e4876b3ed35fedaf641a0ad6886dadd434a2d4fbd70688` |
+| Formal DeWeb release | Live at `tape://1.2.248.tape/`; gateway verified 2026-09-29 |
+
+Circuit ownership handoff is an optional post-submission lifecycle demonstration, not a prerequisite for the listed processor, economics, tapeout, application, evidence, product or repository requirements. It must only be executed after the destination wallet is explicitly confirmed by the owner.
