@@ -24,7 +24,7 @@ The innovation is the combination of identity, operation and transfer. Existing 
 
 That product is deeply integrated with TapeOut rather than merely mentioning it: the application reads the canonical ownership relationship, verifies the official Container adapter, binds the Container account to the Circuit, stores the Processor and Circuit identifiers in the Manifest, and routes execution through the configured Processor ABI. The Pod controller is derived from ownerOf(Circuit ID), so the control plane follows TapeOut ownership rather than a private platform database. This creates a practical use case for any AI service, game, autonomous agent or data product built around a Circuit.
 
-X Layer is the settlement and ownership rail. Registry, Router, Factory and Pod Account are deployed on X Layer mainnet. A creator gets a guided wallet flow for owner verification, Container state, Pod creation, Manifest publication, revenue inspection and handoff verification; an end user can inspect the application without a wallet, then sign one exact-price OKB call and receive an auditable UsageReceipt. The primary asset is the stable Pod operating account, not a speculative token. The live policy allocates 80% to the creator, 15% to the Processor and 5% to Pod commons at 0.0000001 OKB per call, with pull-payment balances rather than hidden custody.
+X Layer is the settlement and ownership rail. The formal Registry, Router, Factory and stable Pod Account are deployed and bound to the `Circuit Commons / CCOM` Processor, Circuit #1 and its official Container. A creator gets a guided flow for owner verification, Container state, Pod creation, Manifest publication, revenue inspection and handoff verification; an end user can inspect without a wallet, then sign one exact-price OKB call and receive an auditable UsageReceipt. The primary asset is the stable Pod operating account, not a speculative token.
 
 The implementation is designed to be reviewable and safe for a mainnet prototype: owner-gated publishing, exact-price checks, bounded basis-point splits, a reentrancy lock, one Factory-created Pod per Circuit, and Pod calls restricted to the current canonical Circuit owner. Foundry regression tests and a release verifier check chain ID, bytecode, Container state, Pod binding and Manifest hash. The UI fails closed when a required address or adapter is missing, and never requests a private key. The repository is explicit that the code is not independently audited and that final paid-call and handoff transactions must be recorded as real evidence before submission.
 
@@ -33,18 +33,28 @@ The implementation is designed to be reviewable and safe for a mainnet prototype
 - GitHub: https://github.com/yanwenzhe519-ctrl/tapeout-circuit-commons
 - Demo: https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/
 - X Layer chain ID: 196
-- Processor / ownership adapter: 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5
-- Registry: 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B
-- Router: 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119
-- Factory: 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8
+- Formal Processor / ownership adapter target: 0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F
+- Formal Processor name / symbol: Circuit Commons / CCOM
+- Formal Processor deployment wallet: 0x05667de34ad47bafe8a8b976c19809cadf7719d2
+- TapeOut factory: 0x1f09DAeFA827f02CBb40967cc91b259763760761
+- Formal transistor supply / minted / unit price: 1,000,000,000 / 50 / 0.000066 OKB
+- Formal Processor creation tx: 0xbd3029889c4946eb6e79bdd2c13c5f9c4d4e6f0a17cca8cca0c138c3d8d32e1c
+- Formal transistor contract: 0x70737D8fdc1f9c99Bf5cc356F4Fc154f72307370
+- Circuit #1 tapeout tx: 0xdb078cc16f0c4c7e909d43fa81cadb1609c2586efb01702b6a29ad87877bc396
+- Circuit #1 Container open tx: 0x9f77805defb518030b74482a0a8b67dd36d5c8519c4ee9145f8ca18186fe4eab
+- Formal Registry: 0x0A67B77e27004cc54A79207335179B7E6D29257D
+- Formal Router: 0x8f1f0224c4B6e775a0c68E31fef374dAAD605D00
+- Formal Factory: 0x6262E61e955a9fa8E923D44341F085f6041509aC
 - Container adapter: 0x536add8f30f03b69f6fbf29d425a816a0dc50106
-- Circuit #1 Container: 0x25A1D87789aE72E326B3A987F610F08219aA0764
-- Circuit #1 Pod Account: 0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6
+- Formal Circuit #1 Container: 0xb67E375c873E1F278A52E215300B42831eDDC641
+- Formal Circuit #1 Pod Account: 0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0
 - Manifest: public/manifests/circuit-1-v1.0.1.json
+
+For the field-by-field submission sheet, including the Processor creation transaction, factory target, transistor economics and the remaining evidence boundary, see [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
 
 ### Proof boundary
 
-The shared X Layer contracts, official Container, Pod Account and active Manifest are deployed and verified. The production build and read-only execution simulation pass. The final user-signed evidence still to be recorded before submission is one paid call producing a UsageReceipt and one real Circuit ownership transfer followed by the handoff verifier. These are clearly marked as pending rather than claimed as completed.
+The discarded `1111 / 2222` deployment remains documented only as test history. The formal deployment now includes Registry, Router, Factory, the official Container and Pod Account. Manifest publication, a paid `UsageReceipt` and the final ownership-handoff evidence remain to be recorded.
 
 ### Competition requirements
 

@@ -1,10 +1,45 @@
 {
   "network": "X Layer",
   "chainId": 196,
-  "verifiedAt": "2026-09-28",
+  "verifiedAt": "2026-09-29",
+  "status": "formal Processor, protocol contracts, official Container and Pod Account deployed and verified",
   "circuitId": "1",
-  "processorIndex": 177,
-  "contracts": {
+  "processorIndex": 248,
+  "formalProcessor": {
+    "address": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
+    "name": "Circuit Commons",
+    "symbol": "CCOM",
+    "creator": "0x05667de34ad47bafe8a8b976c19809cadf7719d2",
+    "factory": "0x1f09DAeFA827f02CBb40967cc91b259763760761",
+    "creationTransaction": "0xbd3029889c4946eb6e79bdd2c13c5f9c4d4e6f0a17cca8cca0c138c3d8d32e1c",
+    "creationBlock": 71743588,
+    "transistor": "0x70737D8fdc1f9c99Bf5cc356F4Fc154f72307370",
+    "totalSupply": "1000000000",
+    "minted": "50",
+    "mintPriceOkb": "0.000066",
+    "protocolFeeOkb": "0.00066",
+    "circuitId": "1",
+    "circuitTapeoutTransaction": "0xdb078cc16f0c4c7e909d43fa81cadb1609c2586efb01702b6a29ad87877bc396",
+    "circuitTapeoutBlock": 71746266,
+    "circuitGateCount": 47,
+    "container": "0xb67E375c873E1F278A52E215300B42831eDDC641",
+    "containerOpened": true,
+    "containerDeployed": true,
+    "containerOpenTransaction": "0x9f77805defb518030b74482a0a8b67dd36d5c8519c4ee9145f8ca18186fe4eab",
+    "containerOpenBlock": 71881734
+  },
+  "testProcessorDeployment": {
+    "wallet": "0x05667de34ad47bafe8a8b976c19809cadf7719d2",
+    "transaction": "0xa86504472de5bc920ea62d7607e3bbe57b6ebdd429de35412290c595bf1f3760",
+    "block": 71301367,
+    "tapeoutFactory": "0x1f09DAeFA827f02CBb40967cc91b259763760761",
+    "transistor": "0xca8aef72b02591b851c78ec3be4341a40a3afb57",
+    "name": "1111",
+    "symbol": "2222",
+    "supplyCap": "100000",
+    "mintPriceOkb": "0"
+  },
+  "testContracts": {
     "registry": "0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B",
     "router": "0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119",
     "factory": "0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8",
@@ -14,24 +49,56 @@
     "container": "0x25A1D87789aE72E326B3A987F610F08219aA0764",
     "podAccount": "0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6"
   },
+  "contracts": {
+    "registry": "0x0A67B77e27004cc54A79207335179B7E6D29257D",
+    "router": "0x8f1f0224c4B6e775a0c68E31fef374dAAD605D00",
+    "factory": "0x6262E61e955a9fa8E923D44341F085f6041509aC",
+    "processor": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
+    "ownershipAdapter": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
+    "containerAdapter": "0x536add8f30f03b69f6fbf29d425a816a0dc50106",
+    "container": "0xb67E375c873E1F278A52E215300B42831eDDC641",
+    "podAccount": "0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0"
+  },
   "deploymentBlocks": {
-    "registry": 71721889,
-    "router": 71721902
+    "registry": 71885138,
+    "router": 71885144,
+    "factory": 71885150,
+    "registrySetFactory": 71885155,
+    "podAccount": 71885553
+  },
+  "deploymentTransactions": {
+    "registrySetFactory": "0xf49cf1c0608fe73860ae9c50db1c491d5f9bc008dda96b21e849e238cb694fef",
+    "podAccountCreated": "0x3d2066eddd57c6a0792e17da2777b9af90aded616422f0858639783f6b0014cd"
+  },
+  "pod": {
+    "address": "0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0",
+    "name": "Circuit Service Pod",
+    "owner": "0x05667DE34Ad47bAFe8a8b976c19809cAdf7719D2",
+    "serviceUri": "https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/",
+    "serviceHash": "0x162bb26c481725579f3786dbe9e48f6ea84114a0c9f19c65c24c2a6f57786158",
+    "creationTransaction": "0x3d2066eddd57c6a0792e17da2777b9af90aded616422f0858639783f6b0014cd",
+    "creationBlock": 71885553
   },
   "manifest": {
     "version": "1.0.1",
-    "hash": "0xa77618e0a5ee29e8b56ab09df0e2422abd3d228712b0ad008aa853d09a23290f",
+    "hash": "0xf62ca2048dc1b4bd1a5e1e808396139d590155febd3dbb29e3da11fb86177f07",
     "uri": "https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/manifests/circuit-1-v1.0.1.json",
     "priceOkb": "0.0000001",
     "creatorBps": 8000,
     "processorBps": 1500,
     "podBps": 500
   },
-  "deweb": {
+  "testDeweb": {
     "name": "1.2.177.tape",
     "uri": "tape://1.2.177.tape/",
     "gateway": "https://1-2-177.tapekit.org/",
     "activation": "live",
     "gatewayVerifiedAt": "2026-09-29"
+  },
+  "formalDeweb": {
+    "name": "1.2.248.tape",
+    "uri": "tape://1.2.248.tape/",
+    "gateway": "https://1-2-248.tapekit.org/",
+    "activation": "pending formal release"
   }
 }

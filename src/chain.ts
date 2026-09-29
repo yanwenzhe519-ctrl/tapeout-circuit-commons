@@ -11,7 +11,8 @@ export const XLAYER_RPC = import.meta.env.VITE_XLAYER_RPC_URL || 'https://rpc.xl
 // wallet transaction targeted at a contract, which is required by some MPC
 // wallets that reject a bare contract-creation transaction.
 const singletonFactoryAddress = '0xce0042B868300000d44A59004Da54A005ffdcf9f' as `0x${string}`
-const storedAddress = (key: string) => typeof window !== 'undefined' ? window.localStorage.getItem(`circuit-commons:${key}`) || '' : ''
+const deploymentNamespace = (import.meta.env.VITE_TAPEOUT_PROCESSOR_ADDRESS || 'unconfigured').toLowerCase()
+const storedAddress = (key: string) => typeof window !== 'undefined' ? window.localStorage.getItem(`circuit-commons:${deploymentNamespace}:${key}`) || '' : ''
 
 export let routerAddress = import.meta.env.VITE_ROUTER_ADDRESS || storedAddress('router')
 export let factoryAddress = import.meta.env.VITE_FACTORY_ADDRESS || storedAddress('factory')
@@ -114,10 +115,10 @@ export async function deployProtocolFromWallet(account: string, processorRecipie
     }
   }
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem('circuit-commons:registry', registry)
-    window.localStorage.setItem('circuit-commons:router', router)
-    window.localStorage.setItem('circuit-commons:factory', factory)
-    window.localStorage.setItem('circuit-commons:processorRecipient', processorRecipient)
+    window.localStorage.setItem(`circuit-commons:${deploymentNamespace}:registry`, registry)
+    window.localStorage.setItem(`circuit-commons:${deploymentNamespace}:router`, router)
+    window.localStorage.setItem(`circuit-commons:${deploymentNamespace}:factory`, factory)
+    window.localStorage.setItem(`circuit-commons:${deploymentNamespace}:processorRecipient`, processorRecipient)
   }
   registryAddress = registry
   routerAddress = router

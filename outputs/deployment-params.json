@@ -1,13 +1,13 @@
 {
   "chainId": 196,
   "rpcUrl": "https://rpc.xlayer.tech",
-  "ownershipAdapter": "0x44bf1283199f080fd3cfaeaa01b8650859fe63b5",
-  "processor": "0x44bf1283199f080fd3cfaeaa01b8650859fe63b5",
+  "ownershipAdapter": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
+  "processor": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
   "processorRecipient": "0x05667de34ad47bafe8a8b976c19809cadf7719d2",
   "circuitId": "1",
   "containerAdapter": "0x536add8f30f03b69f6fbf29d425a816a0dc50106",
   "deployRevenueVault": false,
-  "manifestHash": "0xa77618e0a5ee29e8b56ab09df0e2422abd3d228712b0ad008aa853d09a23290f",
+  "manifestHash": "0xf62ca2048dc1b4bd1a5e1e808396139d590155febd3dbb29e3da11fb86177f07",
   "vaultMaturity": "0",
   "vaultCap": "0"
 }

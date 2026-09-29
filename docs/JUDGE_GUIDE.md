@@ -14,8 +14,8 @@ The critical distinction is that the Circuit changes owner while the Pod address
 
 - Application: https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/
 - Circuit: #1
-- Pod Account: 0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6
-- Official Container: 0x25A1D87789aE72E326B3A987F610F08219aA0764
+- Pod Account: 0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0
+- Official Container: 0xb67E375c873E1F278A52E215300B42831eDDC641
 - Manifest: public/manifests/circuit-1-v1.0.1.json
 
 The public site can be inspected without connecting a wallet. Wallet connection is required only for signed actions.
@@ -53,7 +53,7 @@ forge test -vvv
 
 ## 5. Current proof boundary
 
-As of September 28, 2026, infrastructure is deployed and a read-only mainnet simulation of runEval succeeds. The Router has not yet emitted its first paid UsageReceipt, and the real ownership-handoff transaction remains final demo evidence. The UI and verification logic for both flows are implemented; the repository does not label simulated evidence as a completed transaction.
+As of September 29, 2026, the formal Processor, Circuit #1, official Container, Registry, Router, Factory and stable Pod Account are live. The Processor real eval ABI succeeds in an X Layer read call, and Pod control resolves to the current Circuit owner.
 
-The TapeKit identity `tape://1.2.177.tape/` is live and resolves through the TapeKit gateway. The first paid `UsageReceipt` and a real Circuit ownership handoff remain intentionally unclaimed final evidence until they are recorded on X Layer.
+The old TapeKit identity `tape://1.2.177.tape/` is test history. The formal Processor identity is `1.2.248`; its DeWeb release, first paid `UsageReceipt` and ownership handoff remain unclaimed until recorded on X Layer.
 

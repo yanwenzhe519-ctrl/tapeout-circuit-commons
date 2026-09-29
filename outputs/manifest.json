@@ -3,7 +3,7 @@
   "circuitId": "1",
   "name": "Circuit Commons Pod Controller",
   "version": "1.0.1",
-  "processor": "0x44bf1283199f080fd3cfaeaa01b8650859fe63b5",
+  "processor": "0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F",
   "inputSchema": "owner_verified:bool, container_opened:bool, manifest_active:bool, revenue_configured:bool, service_live:bool, assets_bound:bool, handoff_requested:bool, new_owner_verified:bool, old_owner_revoked:bool, risk_clear:bool, emergency_pause:bool, settlement_ready:bool, treasury_ready:bool",
   "outputSchema": "pod_ready:bool, allow_call:bool, allow_settlement:bool, allow_handoff:bool, freeze_project:bool",
   "price": "0.0000001",

@@ -3,6 +3,7 @@ import process from 'node:process'
 import { createPublicClient, getAddress, http, keccak256, parseAbi, stringToHex } from 'viem'
 
 const env = { ...loadEnv('.env.local'), ...process.env }
+const deploymentEnv = loadEnv('.env.deploy')
 const rpcUrl = env.VITE_XLAYER_RPC_URL || 'https://rpc.xlayer.tech'
 const manifestFallbackUri = env.VITE_MANIFEST_FALLBACK_URI || ''
 const expectedChainId = 196
@@ -45,6 +46,8 @@ async function main() {
   const chainId = await client.getChainId()
   console.log(`Chain ID: ${chainId}`)
   if (chainId !== expectedChainId) errors.push(`Expected X Layer chain ID ${expectedChainId}, got ${chainId}`)
+  if (deploymentEnv.TAPEOUT_PROCESSOR && env.VITE_TAPEOUT_PROCESSOR_ADDRESS?.toLowerCase() !== deploymentEnv.TAPEOUT_PROCESSOR.toLowerCase()) errors.push('Processor does not match the formal .env.deploy target')
+  if (deploymentEnv.TAPEOUT_OWNERSHIP_ADAPTER && env.VITE_TAPEOUT_OWNERSHIP_ADAPTER_ADDRESS?.toLowerCase() !== deploymentEnv.TAPEOUT_OWNERSHIP_ADAPTER.toLowerCase()) errors.push('Ownership adapter does not match the formal .env.deploy target')
 
   const normalized = Object.fromEntries(Object.entries(addresses).map(([key, value]) => [key, addressOrError(key, value, !['vault', 'containerAdapter', 'podAccount', 'containerAddress'].includes(key))]))
   for (const [label, address] of Object.entries(normalized)) {
@@ -182,6 +185,18 @@ async function main() {
       const configuredFactory = await client.readContract({ address: registryAddress, abi: parseAbi(['function factory() view returns (address)']), functionName: 'factory' })
       if (configuredFactory.toLowerCase() !== factoryAddress.toLowerCase()) errors.push(`factory: Registry points to ${configuredFactory}, expected ${factoryAddress}`)
       console.log(`Registry factory: ${configuredFactory}`)
+      const [factoryOwnership, factoryRegistry, factoryContainerAdapter, factoryProcessor, registryOwnership] = await Promise.all([
+        client.readContract({ address: factoryAddress, abi: parseAbi(['function ownership() view returns (address)']), functionName: 'ownership' }),
+        client.readContract({ address: factoryAddress, abi: parseAbi(['function registry() view returns (address)']), functionName: 'registry' }),
+        client.readContract({ address: factoryAddress, abi: parseAbi(['function containerAdapter() view returns (address)']), functionName: 'containerAdapter' }),
+        client.readContract({ address: factoryAddress, abi: parseAbi(['function processor() view returns (address)']), functionName: 'processor' }),
+        client.readContract({ address: registryAddress, abi: parseAbi(['function ownership() view returns (address)']), functionName: 'ownership' }),
+      ])
+      if (normalized.ownershipAdapter && factoryOwnership.toLowerCase() !== normalized.ownershipAdapter.toLowerCase()) errors.push(`factory: ownership adapter mismatch (${factoryOwnership})`)
+      if (factoryRegistry.toLowerCase() !== registryAddress.toLowerCase()) errors.push(`factory: Registry mismatch (${factoryRegistry})`)
+      if (normalized.containerAdapter && factoryContainerAdapter.toLowerCase() !== normalized.containerAdapter.toLowerCase()) errors.push(`factory: Container adapter mismatch (${factoryContainerAdapter})`)
+      if (normalized.processor && factoryProcessor.toLowerCase() !== normalized.processor.toLowerCase()) errors.push(`factory: Processor mismatch (${factoryProcessor})`)
+      if (normalized.ownershipAdapter && registryOwnership.toLowerCase() !== normalized.ownershipAdapter.toLowerCase()) errors.push(`registry: ownership adapter mismatch (${registryOwnership})`)
     } catch (error) {
       errors.push(`Registry factory read failed (${error instanceof Error ? error.message : String(error)})`)
     }

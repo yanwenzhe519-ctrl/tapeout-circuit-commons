@@ -9,7 +9,7 @@
 
 Circuit Commons packages a real TapeOut Circuit, its official Container, a stable Pod Account, service configuration, assets, revenue rights and operating history into one transferable on-chain application unit.
 
-[Open the live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) · [Read the judge guide](docs/JUDGE_GUIDE.md) · [Inspect the deployment](deployments/xlayer-mainnet.json) · [View the Manifest](public/manifests/circuit-1-v1.0.1.json)
+[Open the live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) · [Read the judge guide](docs/JUDGE_GUIDE.md) · [Submission checklist](docs/SUBMISSION_CHECKLIST.md) · [Inspect the deployment](deployments/xlayer-mainnet.json) · [View the Manifest](public/manifests/circuit-1-v1.0.1.json)
 
 ![Circuit Commons overview](docs/assets/overview.png)
 
@@ -62,19 +62,20 @@ This validates the production build, X Layer chain ID 196, deployed bytecode, of
 
 ## Production state
 
-Verified on September 29, 2026. The X Layer Registry, Router, Factory, official Container, stable Pod Account, active Manifest and live TapeKit identity are deployed and verified. The public GitHub Pages app and DeWeb gateway are available for inspection. The first user-signed paid receipt and real Circuit handoff are final demo evidence still to be recorded; the repository does not present a simulation as a completed transaction.
+The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Registry, Router, Factory and stable Pod Account are live on X Layer. Manifest publication, paid-call evidence and the final handoff transaction remain the submission smoke tests.
 
 ## X Layer addresses
 
 | Component | Address |
 | --- | --- |
-| Registry | 0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B |
-| Router | 0x2eC64f0Fc64Fc4856Ab1f580D87823A39a580119 |
-| Pod Factory | 0x695AB5f2718ae631fE7C4FD79cEC93EE3Dbbf3e8 |
-| TapeOut Processor / ownership adapter | 0x44bf1283199f080fd3cfaeaa01b8650859fe63b5 |
+| Formal Registry | 0x0A67B77e27004cc54A79207335179B7E6D29257D |
+| Formal Router | 0x8f1f0224c4B6e775a0c68E31fef374dAAD605D00 |
+| Formal Pod Factory | 0x6262E61e955a9fa8E923D44341F085f6041509aC |
+| Formal TapeOut Processor / ownership adapter target | 0xC658d4FCe1bD1b2E36e9d2c36832E933abe9189F |
+| Formal transistor contract | 0x70737D8fdc1f9c99Bf5cc356F4Fc154f72307370 |
+| Formal Circuit #1 Container | 0xb67E375c873E1F278A52E215300B42831eDDC641 |
 | Container adapter | 0x536add8f30f03b69f6fbf29d425a816a0dc50106 |
-| Circuit #1 Container | 0x25A1D87789aE72E326B3A987F610F08219aA0764 |
-| Circuit #1 Pod Account | 0x5FeB9c3884Cf69b0A960087E66d3b6638BE00eb6 |
+| Formal Circuit #1 Pod Account | 0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0 |
 
 ## Why it fits the competition
 

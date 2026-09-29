@@ -31,12 +31,16 @@ import './publisher.css'
 const XLAYER_CHAIN_ID = 196
 const XLAYER_HEX_CHAIN_ID = '0xc4'
 const RPC_URL = import.meta.env.VITE_XLAYER_RPC_URL || 'https://rpc.xlayer.tech'
+const PROCESSOR_ADDRESS = import.meta.env.VITE_TAPEOUT_PROCESSOR_ADDRESS || ''
+const DEPLOYMENT_NAMESPACE = (PROCESSOR_ADDRESS || 'unconfigured').toLowerCase()
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as Hex
+const STORED_REGISTRY = typeof window !== 'undefined' ? window.localStorage.getItem(`circuit-commons:${DEPLOYMENT_NAMESPACE}:registry`) || '' : ''
 const SITE_REGISTRY = (import.meta.env.VITE_TAPEKIT_SITE_REGISTRY_ADDRESS || '0xd6efb7adcc9c83dc4924ad56f6a8e4e969b9adb6') as Hex
 const DOMAIN_BINDING = (import.meta.env.VITE_TAPEKIT_DOMAIN_BINDING_ADDRESS || '0x68809fd2fb343aa57d0aeb7f33defe477c9666f9') as Hex
-const CIRCUIT_COMMONS_REGISTRY = (import.meta.env.VITE_REGISTRY_ADDRESS || '0xcCc8087Ef66f4728efCf18A9e785A05B4e10639B') as Hex
-const CONTAINER = (import.meta.env.VITE_TAPEOUT_CONTAINER_ADDRESS || '0x25A1D87789aE72E326B3A987F610F08219aA0764') as Hex
+const CIRCUIT_COMMONS_REGISTRY = (import.meta.env.VITE_REGISTRY_ADDRESS || STORED_REGISTRY || ZERO_ADDRESS) as Hex
+const CONTAINER = (import.meta.env.VITE_TAPEOUT_CONTAINER_ADDRESS || ZERO_ADDRESS) as Hex
 const CIRCUIT_ID = BigInt(import.meta.env.VITE_CIRCUIT_ID || '1')
-const PROCESSOR_INDEX = Number(import.meta.env.VITE_TAPEOUT_PROCESSOR_INDEX || '177')
+const PROCESSOR_INDEX = Number(import.meta.env.VITE_TAPEOUT_PROCESSOR_INDEX || '248')
 const XLAYER_AREA_CODE = 2
 const EXPECTED_OWNER = (import.meta.env.VITE_ADMIN_WALLET_ADDRESS || '0x05667DE34Ad47bAFe8a8b976c19809cAdf7719D2').toLowerCase()
 const GATEWAY = import.meta.env.VITE_TAPEKIT_GATEWAY || 'tapekit.org'
@@ -45,7 +49,7 @@ const DEWEB_URL = `https://${CIRCUIT_ID}-${XLAYER_AREA_CODE}-${PROCESSOR_INDEX}.
 const CHUNK_SIZE = 24_000
 const MAX_FILE_SIZE = 8 * 1024 * 1024
 const OPERATOR_KEY = `circuit-commons:deweb-operator:${XLAYER_CHAIN_ID}`
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as Hex
+const PUBLISHER_CONFIGURED = CIRCUIT_COMMONS_REGISTRY !== ZERO_ADDRESS && CONTAINER !== ZERO_ADDRESS
 
 const xLayer = defineChain({
   id: XLAYER_CHAIN_ID,
@@ -368,6 +372,10 @@ function Publisher() {
   }
 
   async function deploy() {
+    if (!PUBLISHER_CONFIGURED) {
+      setPhase('正式 Registry 或 Container 尚未配置，已停止发布，避免写入错误项目。')
+      return
+    }
     if (!account || !plan || !ownerReady || !chainReady) return
     if (account.toLowerCase() !== EXPECTED_OWNER && !window.confirm('当前钱包与项目记录的 owner 地址不同，但 SiteRegistry 已确认它可以编辑此 Container。仍要继续吗？')) return
     const detail = `即将上传 ${plan.uploadFiles.length} 个变更文件、${plan.chunks} 个分块。\n预计实际上传 Gas：${formatEther(plan.estimatedWei)} OKB（${formatGwei(plan.gasPrice)} gwei）。\n临时操作员充值上限：${formatEther(plan.operatorFundingWei)} OKB，未使用余额会自动退回。\n钱包将确认：操作员充值、24 小时授权、免费 DeWeb 名称激活、Registry 服务入口切换和最后的权限清理。`

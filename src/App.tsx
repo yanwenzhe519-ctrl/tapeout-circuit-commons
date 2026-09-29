@@ -313,12 +313,16 @@ function App() {
   const [language, setLanguage] = useState<Language>(
     () => (localStorage.getItem("cc-language") as Language) || "en",
   );
-  const [view, setView] = useState<View>("overview");
+  const [view, setView] = useState<View>(() => {
+    const requested = new URLSearchParams(window.location.search).get("view") as View | null;
+    return requested && nav.some((item) => item.id === requested) ? requested : "overview";
+  });
   const [account, setAccount] = useState("");
   const [chainId, setChainId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
+  const [, setDeploymentRevision] = useState(0);
   const [processors, setProcessors] = useState<Processor[]>([]);
   const [processorTotal, setProcessorTotal] = useState(0);
   const [dataState, setDataState] = useState<
@@ -843,6 +847,7 @@ function App() {
                 contractsReady={contractsReady}
                 onConnect={connect}
                 onSwitch={switchNetwork}
+                onDeployed={() => setDeploymentRevision((value) => value + 1)}
               />
             )}
             {view === "activity" && (
@@ -1261,7 +1266,7 @@ function Pods({
     }
   }, [circuitIdInput]);
   const [podName, setPodName] = useState("Circuit Service Pod");
-  const [serviceUrl, setServiceUrl] = useState(() => new URL(import.meta.env.BASE_URL, window.location.origin).toString());
+  const [serviceUrl, setServiceUrl] = useState(() => import.meta.env.VITE_SERVICE_SURFACE_URL || "https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/");
   const [handoffTarget, setHandoffTarget] = useState("");
   const [prepared, setPrepared] = useState(false);
   const [container, setContainer] = useState<Awaited<ReturnType<typeof readTapeoutContainer>>>(null);
@@ -2537,12 +2542,14 @@ function AdminLaunch({
   contractsReady,
   onConnect,
   onSwitch,
+  onDeployed,
 }: {
   account: string;
   networkReady: boolean;
   contractsReady: boolean;
   onConnect: () => void;
   onSwitch: () => void;
+  onDeployed: () => void;
 }) {
   const zh = useLanguage() === "zh";
   const [checks, setChecks] = useState<Awaited<ReturnType<typeof readDeploymentChecks>>>([]);
@@ -2572,6 +2579,7 @@ function AdminLaunch({
     setDeploymentMessage("");
     try {
       const result = await deployProtocolFromWallet(account, processorRecipientAddress || account, account);
+      onDeployed();
       setDeploymentMessage(zh ? `部署完成：Registry ${shortAddress(result.registry)}，Router ${shortAddress(result.router)}，Factory ${shortAddress(result.factory)}` : `Deployed: Registry ${shortAddress(result.registry)}, Router ${shortAddress(result.router)}, Factory ${shortAddress(result.factory)}`);
       await verify();
     } catch (error) {

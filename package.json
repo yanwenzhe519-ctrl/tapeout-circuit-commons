@@ -15,6 +15,7 @@
     "contracts:configure": "node scripts/deploy-foundry.mjs configure",
     "manifest:generate": "node scripts/generate-manifest.mjs",
     "deployment:params": "node scripts/generate-deployment-params.mjs",
+    "deployment:browser-plan": "node scripts/generate-browser-deployment-plan.mjs",
     "deployment:env": "node scripts/write-production-env.mjs",
     "verify:deployment": "node scripts/verify-deployment.mjs",
     "verify:xlayer": "node scripts/verify-deployment.mjs",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "solc": "0.8.24",
     "typescript": "latest"
   }
 }

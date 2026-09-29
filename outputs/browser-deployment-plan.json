@@ -1,0 +1,9 @@
+{
+  "network": "X Layer",
+  "chainId": 196,
+  "deployer": "0x05667de34ad47bafe8a8b976c19809cadf7719d2",
+  "singletonFactory": "0xce0042B868300000d44A59004Da54A005ffdcf9f",
+  "registry": "0x0A67B77e27004cc54A79207335179B7E6D29257D",
+  "router": "0x8f1f0224c4B6e775a0c68E31fef374dAAD605D00",
+  "factory": "0x6262E61e955a9fa8E923D44341F085f6041509aC"
+}

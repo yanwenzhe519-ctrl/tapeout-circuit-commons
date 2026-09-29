@@ -9,9 +9,9 @@ npm run build
 npm run deweb:publisher
 ```
 
-Use the Circuit #1 owner wallet on X Layer, select `dist`, review the file/chunk/Gas plan, and confirm the wallet prompts. The publisher targets Container `0x25A1D87789aE72E326B3A987F610F08219aA0764`, SiteRegistry `0xd6efb7adcc9c83dc4924ad56f6a8e4e969b9adb6`, DomainBinding `0x68809fd2fb343aa57d0aeb7f33defe477c9666f9`, and the X Layer name `1.2.177.tape`. It never asks for the owner private key.
+Use the Circuit #1 owner wallet on X Layer, select `dist`, review the file/chunk/Gas plan, and confirm the wallet prompts. The publisher targets the formal Container `0xb67E375c873E1F278A52E215300B42831eDDC641`, SiteRegistry `0xd6efb7adcc9c83dc4924ad56f6a8e4e969b9adb6`, DomainBinding `0x68809fd2fb343aa57d0aeb7f33defe477c9666f9`, and the formal X Layer name `1.2.248.tape`. It never asks for the owner private key.
 
-This is the real launch path. Empty addresses are expected before the contracts are deployed; do not replace them with guessed values.
+This is the real launch path. The old `1.2.177.tape` release belongs to the discarded test Processor and must not be presented as the formal product.
 
 ## 1. Install and prepare
 
@@ -38,22 +38,29 @@ npm run contracts:test
 
 Upload `outputs/manifest.json` unchanged to immutable storage. Keep the printed keccak256 hash and URI.
 
-## 3. Deploy
+## 3. Formal deployment (completed)
 
 ```bash
 npm run contracts:deploy
 ```
 
-Record the printed `CircuitPodAccount`, `CircuitCommonsRegistry`, `CircuitCommonsRouter`, and optional `CircuitRevenueVault` addresses. The deploy script does not publish a manifest or change the Registry recipient because those actions must be authorized by the current Circuit owner.
+The formal X Layer deployment is recorded in `deployments/xlayer-mainnet.json`:
+
+- Registry: `0x0A67B77e27004cc54A79207335179B7E6D29257D`
+- Router: `0x8f1f0224c4B6e775a0c68E31fef374dAAD605D00`
+- Factory: `0x6262E61e955a9fa8E923D44341F085f6041509aC`
+- Pod Account: `0xb4cAE1414c31158fCEDE3A2ad01F1C176e7809C0`
+
+Do not redeploy these contracts for the submission. Manifest publication remains a separate Circuit-owner transaction.
 
 ## 4. Configure the Circuit owner actions
 
-Set the deployed addresses in `.env.local`, then use the owner wallet to:
+The deployed addresses are already set in `.env.local`. Use the owner wallet to:
 
 1. Publish the exact Manifest URI, hash, price, and payout shares.
-2. Set `REVENUE_RECIPIENT` to the intended Revenue Vault or Pod treasury.
-3. Run `npm run contracts:configure` only when `.env.deploy` contains the current owner key and the correct Registry address.
-4. Pay the official TapeOut Container `FEE()` and call `open(processor, circuitId)` from the Circuit owner wallet.
+2. Confirm the stable Pod is the creator/commons revenue destination.
+3. Do not run `contracts:configure` for the wallet-only deployment.
+4. Do not pay the Container fee again: the official Container is already open and deployed.
 
 ## 5. Verify before opening to users
 
@@ -62,8 +69,8 @@ npm run verify:xlayer
 npm run build
 ```
 
-The verifier must report X Layer chain ID `196`, live Processor Circuit ownership, matching Container account, Router processor recipient, and deployed shared Registry/Router/Factory bytecode. A per-Circuit Pod Account is created by the Factory and is not a global deployment prerequisite. It intentionally fails while any shared production address is blank.
+The verifier must report X Layer chain ID `196`, live Processor Circuit ownership, matching Container account, Router processor recipient, deployed Registry/Router/Factory bytecode and the stable Pod binding. Before Manifest publication, its only expected errors are `incomplete manifest` and `manifest is inactive`.
 
 ## 6. Real smoke test
 
-Use the connected owner/user wallet to make one paid `runEval` call with the verified input encoding. Confirm the transaction receipt, `UsageReceipt` event, creator/processor/Pod pending balances, and the corresponding X Layer explorer transaction before enabling `VITE_ENABLE_LIVE_CALLS=true`.
+After publishing the Manifest, use a connected user wallet to make one paid `runEval` call with the verified input encoding. Confirm the transaction receipt, `UsageReceipt` event, creator/processor/Pod pending balances, and the corresponding X Layer explorer transaction. `VITE_ENABLE_LIVE_CALLS=true` is already configured for the formal release.
