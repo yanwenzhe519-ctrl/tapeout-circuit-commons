@@ -5,11 +5,11 @@
 [![TapeOut](https://img.shields.io/badge/TapeOut-Circuit%20%231-14b8a6)](https://tapeout.net/)
 [![Status](https://img.shields.io/badge/status-mainnet%20prototype-f45f4b)](#production-state)
 
-**The operating and handoff layer for TapeOut applications on X Layer.**
+**Turn a taped-out TapeOut Circuit into a verified, payable and handoff-ready application on X Layer.**
 
-Circuit Commons packages a real TapeOut Circuit, its official Container, a stable Pod Account, service configuration, assets, revenue rights and operating history into one transferable on-chain application unit.
+Circuit Commons connects TapeOut's permanent compute identity to X Layer payment, receipts, revenue and DeWeb delivery. A Circuit Pod packages the real Circuit, official Container, service Manifest, stable Pod Account, revenue policy and operating history into one application boundary.
 
-[Open the live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) · [Read the judge guide](docs/JUDGE_GUIDE.md) · [Submission checklist](docs/SUBMISSION_CHECKLIST.md) · [Inspect the deployment](deployments/xlayer-mainnet.json) · [View the Manifest](public/manifests/circuit-1-v1.0.1.json)
+[Open the live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) · [Open the formal DeWeb gateway](https://1-2-248.tapekit.org/) · [Read the judge guide](docs/JUDGE_GUIDE.md) · [Submission checklist](docs/SUBMISSION_CHECKLIST.md) · [Inspect the deployment](deployments/xlayer-mainnet.json) · [View the Manifest](public/manifests/circuit-1-v1.0.1.json)
 
 ![Circuit Commons overview](docs/assets/overview.png)
 
@@ -46,23 +46,25 @@ flowchart LR
     N --> P
 ~~~
 
-## What judges can verify in three minutes
+## Three-minute judge path
 
-Open the [live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) without a wallet, inspect Circuit registry and Circuit Pods, then run the release verifier:
+1. Open the [live app](https://yanwenzhe519-ctrl.github.io/tapeout-circuit-commons/) without a wallet and inspect Circuit #1, its official Container, Pod Account and Manifest.
+2. Open the [formal DeWeb gateway](https://1-2-248.tapekit.org/) and compare the public service surface with the Manifest.
+3. Run the release verifier locally:
 
 ~~~bash
 npm install
-cp .env.example .env.local
+cp .env.formal.example .env.local
 npm run verify:release
 ~~~
 
-This validates the production build, X Layer chain ID 196, deployed bytecode, official Container state, Pod binding and the public Manifest hash. The full narrative and competition evidence are in [SUBMISSION.md](SUBMISSION.md) and [docs/JUDGE_GUIDE.md](docs/JUDGE_GUIDE.md).
+This validates the production build, X Layer chain ID 196, deployed bytecode, official Container state, Pod binding and the public Manifest hash. The full narrative and transaction evidence are in [SUBMISSION.md](SUBMISSION.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md) and [docs/JUDGE_GUIDE.md](docs/JUDGE_GUIDE.md).
 
 ![Verified Circuit registry](docs/assets/registry.png)
 
 ## Production state
 
-The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Registry, Router, Factory and stable Pod Account are live on X Layer. The formal Manifest is published, the Registry points to the live DeWeb release, and a real paid call has produced `UsageReceipt #1`. Creator/Processor and Pod withdrawals are also recorded in [the deployment evidence](deployments/xlayer-mainnet.json). Circuit ownership handoff is an optional follow-up demonstration and is intentionally not represented as completed evidence.
+The formal `Circuit Commons / CCOM` Processor, Circuit #1 official Container, Registry, Router, Factory and stable Pod Account are live on X Layer. The formal Manifest is published, the Registry points to the live DeWeb release, and a real paid call has produced `UsageReceipt #1`. Creator/Processor and Pod withdrawals are recorded in [the deployment evidence](deployments/xlayer-mainnet.json). The handoff control path is implemented, but no ownership transfer is presented as completed production evidence.
 
 ## X Layer addresses
 

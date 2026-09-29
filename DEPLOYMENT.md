@@ -55,7 +55,7 @@ Do not redeploy these contracts for the submission. Manifest publication remains
 
 ## 4. Configure the Circuit owner actions
 
-The deployed addresses are already set in `.env.local`. Use the owner wallet to:
+For the formal release, configure the deployed addresses in the local `.env.local` (or in the GitHub Pages environment secrets). Use the owner wallet to:
 
 1. Publish the exact Manifest URI, hash, price, and payout shares.
 2. Confirm the stable Pod is the creator/commons revenue destination.

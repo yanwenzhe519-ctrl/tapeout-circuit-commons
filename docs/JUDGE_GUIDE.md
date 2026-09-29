@@ -24,7 +24,7 @@ The public site can be inspected without connecting a wallet. Wallet connection 
 
 ~~~bash
 npm install
-cp .env.example .env.local
+cp .env.formal.example .env.local
 npm run verify:release
 ~~~
 
@@ -53,7 +53,17 @@ forge test -vvv
 
 ## 5. Current proof boundary
 
-As of September 29, 2026, the formal Processor, Circuit #1, official Container, Registry, Router, Factory and stable Pod Account are live. The Processor real eval ABI succeeds in an X Layer read call, and Pod control resolves to the current Circuit owner.
+As of September 29, 2026, the formal Processor, Circuit #1, official Container, Registry, Router, Factory and stable Pod Account are live. The formal Manifest is published, the formal DeWeb release is live, a real paid Router call emitted `UsageReceipt #1`, and Pod/Processor withdrawals are recorded in the deployment metadata. The Processor eval ABI succeeds in an X Layer read call, and Pod control resolves to the current Circuit owner.
 
-The old TapeKit identity `tape://1.2.177.tape/` is test history. The formal Processor identity is `1.2.248`; its DeWeb release, first paid `UsageReceipt` and ownership handoff remain unclaimed until recorded on X Layer.
+The old TapeKit identity `tape://1.2.177.tape/` is test history. The formal DeWeb identity is `tape://1.2.248.tape/`. Ownership handoff is an implemented lifecycle path and an optional follow-up demonstration; it is not represented as a completed transfer in this submission.
+
+## 6. Evidence map
+
+| Claim | Where to verify it |
+| --- | --- |
+| TapeOut identity and Circuit #1 | [`deployments/xlayer-mainnet.json`](../deployments/xlayer-mainnet.json) and the TapeOut links in [`SUBMISSION.md`](../SUBMISSION.md) |
+| Official Container binding | `npm run verify:deployment` and the Container fields in the deployment metadata |
+| X Layer protocol contracts | Registry, Router, Factory and Pod addresses in [`SUBMISSION.md`](../SUBMISSION.md) |
+| Paid execution and revenue | UsageReceipt and withdrawal transactions in [`docs/SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) |
+| Public service and Manifest | [formal DeWeb gateway](https://1-2-248.tapekit.org/) and [`public/manifests/circuit-1-v1.0.1.json`](../public/manifests/circuit-1-v1.0.1.json) |
 
